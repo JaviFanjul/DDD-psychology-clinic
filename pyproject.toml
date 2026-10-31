@@ -1,2 +1,7 @@
 [tool.uv.workspace]
 members = ["pkg/*"]
+
+[dependency-groups]
+dev = [
+    "ruff==0.17.3",
+]
