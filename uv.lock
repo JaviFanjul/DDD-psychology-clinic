@@ -4,14 +4,14 @@ requires-python = ">=3.14"
 
 [manifest]
 members = [
-    "clinica-patients",
+    "patients",
 ]
 
 [manifest.dependency-groups]
 dev = [{ name = "ruff", specifier = "==0.17.3" }]
 
 [[package]]
-name = "clinica-patients"
+name = "patients"
 version = "0.1.0"
 source = { editable = "pkg/patients" }
 
