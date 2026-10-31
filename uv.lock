@@ -1,11 +1,19 @@
 version = 1
 revision = 3
-requires-python = ">=3.14"
+requires-python = "==3.14.4"
 
 [manifest]
+members = [
+    "patients",
+]
 
 [manifest.dependency-groups]
 dev = [{ name = "ruff", specifier = "==0.17.3" }]
+
+[[package]]
+name = "patients"
+version = "0.1.0"
+source = { editable = "pkg/patients" }
 
 [[package]]
 name = "ruff"
