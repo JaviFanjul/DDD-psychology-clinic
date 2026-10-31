@@ -14,6 +14,8 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          version: "0.11.29"
       - run: uv run --locked --only-dev ruff check
       - run: uv run --locked --only-dev ruff format --check
 
@@ -22,4 +24,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          version: "0.11.29"
       - run: uv run --locked pytest
