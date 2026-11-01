@@ -1,31 +1,31 @@
-from core.domain.model.patient.events import PatientRegistered
+from core.domain.model.patient.events import PatientCreated
 from core.domain.model.patient.patient import Patient
 
 
-def test_given_an_id_and_an_email_when_registering_then_the_patient_holds_them(
+def test_given_an_id_and_an_email_when_creating_then_the_patient_holds_them(
     patient_id, patient_email
 ):
-    patient = Patient.register(patient_id, patient_email)
+    patient = Patient.create(patient_id, patient_email)
 
     assert patient.id == patient_id
     assert patient.email == patient_email
 
 
-def test_given_a_registered_patient_when_pulling_then_it_returns_patient_registered(
-    registered_patient, patient_id
+def test_given_a_created_patient_when_pulling_then_it_returns_patient_created(
+    created_patient, patient_id
 ):
-    [event] = registered_patient.pull_events()
+    [event] = created_patient.pull_events()
 
-    assert isinstance(event, PatientRegistered)
+    assert isinstance(event, PatientCreated)
     assert event.patient_id == patient_id
 
 
 def test_given_events_already_pulled_when_pulling_again_then_it_returns_no_events(
-    registered_patient,
+    created_patient,
 ):
-    registered_patient.pull_events()
+    created_patient.pull_events()
 
-    events = registered_patient.pull_events()
+    events = created_patient.pull_events()
 
     assert events == []
 

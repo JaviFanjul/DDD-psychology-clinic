@@ -1,5 +1,5 @@
 from core.domain.domain_event import DomainEvent
-from core.domain.model.patient.events import PatientRegistered
+from core.domain.model.patient.events import PatientCreated
 from core.domain.model.patient.patient_email import PatientEmail
 from core.domain.model.patient.patient_id import PatientId
 
@@ -11,9 +11,9 @@ class Patient:
         self._events: list[DomainEvent] = []
 
     @classmethod
-    def register(cls, id: PatientId, email: PatientEmail) -> Patient:
+    def create(cls, id: PatientId, email: PatientEmail) -> Patient:
         patient: Patient = cls(id, email)
-        patient._events.append(PatientRegistered(id))
+        patient._events.append(PatientCreated(id))
         return patient
 
     def pull_events(self) -> list[DomainEvent]:

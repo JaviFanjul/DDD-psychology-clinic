@@ -11,8 +11,8 @@ Domain events record what happens in the domain, and we need a shared criterion 
 ## Decision
 
 1. **Immutable:** an event can't change once created, because what has already happened can't change either. We declare them with `@dataclass(frozen=True)`.
-2. **Past tense:** an event's name states something that has already happened, such as `PatientRegistered`.
-3. **Minimal data:** an event contains only the information that is essential to fulfil its purpose. `PatientRegistered` carries the `PatientId`, not the whole patient.
+2. **Past tense:** an event's name states something that has already happened, such as `PatientCreated`.
+3. **Minimal data:** an event contains only the information that is essential to fulfil its purpose. `PatientCreated` carries the `PatientId`, not the whole patient.
 
 ## Consequences
 
