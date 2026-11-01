@@ -15,5 +15,5 @@ def patient_email() -> PatientEmail:
 
 
 @pytest.fixture
-def registered_patient(patient_id: PatientId, patient_email: PatientEmail) -> Patient:
-    return Patient.register(patient_id, patient_email)
+def created_patient(patient_id: PatientId, patient_email: PatientEmail) -> Patient:
+    return Patient.create(patient_id, patient_email)

@@ -1,33 +1,33 @@
 import pytest
-from core.application.command.register_patient import RegisterPatientCommand
+from core.application.command.create_patient import CreatePatientCommand
 from core.application.query.get_patient import GetPatientQuery
 from core.domain.model.patient.errors import InvalidPatientEmail, InvalidPatientId
 from core.domain.model.patient.patient_email import PatientEmail
 from core.domain.model.patient.patient_id import PatientId
 
 
-def test_given_an_email_when_registering_then_it_dispatches_the_command_with_the_returned_id(
+def test_given_an_email_when_creating_then_it_dispatches_the_command_with_the_returned_id(
     controller, command_bus
 ):
-    id = controller.register("ana@gmail.com")
+    id = controller.create("ana@gmail.com")
 
     assert command_bus.handled == [
-        RegisterPatientCommand(id=PatientId.from_string(id), email=PatientEmail("ana@gmail.com"))
+        CreatePatientCommand(id=PatientId.from_string(id), email=PatientEmail("ana@gmail.com"))
     ]
 
 
-def test_given_two_registrations_when_registering_then_each_gets_its_own_id(controller):
-    first_id = controller.register("ana@gmail.com")
-    second_id = controller.register("ana@gmail.com")
+def test_given_two_creations_when_creating_then_each_gets_its_own_id(controller):
+    first_id = controller.create("ana@gmail.com")
+    second_id = controller.create("ana@gmail.com")
 
     assert first_id != second_id
 
 
-def test_given_an_invalid_email_when_registering_then_it_raises_and_dispatches_nothing(
+def test_given_an_invalid_email_when_creating_then_it_raises_and_dispatches_nothing(
     controller, command_bus
 ):
     with pytest.raises(InvalidPatientEmail):
-        controller.register("not-an-email")
+        controller.create("not-an-email")
 
     assert command_bus.handled == []
 

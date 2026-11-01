@@ -9,17 +9,17 @@ from core.domain.model.patient.patient_id import PatientId
 
 
 @dataclass(frozen=True)
-class RegisterPatientCommand(Command):
+class CreatePatientCommand(Command):
     id: PatientId
     email: PatientEmail
 
 
-class RegisterPatientCommandHandler(CommandHandler[RegisterPatientCommand]):
+class CreatePatientCommandHandler(CommandHandler[CreatePatientCommand]):
     def __init__(self, repository: PatientCommandRepository, event_bus: EventBus) -> None:
         self._repository = repository
         self._event_bus = event_bus
 
-    def handle(self, command: RegisterPatientCommand) -> None:
-        patient: Patient = Patient.register(command.id, command.email)
+    def handle(self, command: CreatePatientCommand) -> None:
+        patient: Patient = Patient.create(command.id, command.email)
         self._repository.save(patient)
         self._event_bus.publish(patient.pull_events())

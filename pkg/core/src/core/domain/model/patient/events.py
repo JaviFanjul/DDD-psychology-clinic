@@ -5,5 +5,5 @@ from core.domain.model.patient.patient_id import PatientId
 
 
 @dataclass(frozen=True)
-class PatientRegistered(DomainEvent):
+class PatientCreated(DomainEvent):
     patient_id: PatientId

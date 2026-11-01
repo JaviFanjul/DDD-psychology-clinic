@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from core.application.command.register_patient import RegisterPatientCommand
+from core.application.command.create_patient import CreatePatientCommand
 from core.application.query.get_patient import GetPatientQuery
 from core.domain.command_bus import CommandBus
 from core.domain.domain_error import DomainError
@@ -26,10 +26,10 @@ class PatientController:
         self._command_bus = command_bus
         self._query_bus = query_bus
 
-    def register(self, email: str) -> str:
+    def create(self, email: str) -> str:
         patient_id: PatientId = PatientId.generate()
         patient_email: PatientEmail = PatientEmail(email)
-        self._command_bus.handle(RegisterPatientCommand(id=patient_id, email=patient_email))
+        self._command_bus.handle(CreatePatientCommand(id=patient_id, email=patient_email))
         return str(patient_id)
 
     def get(self, id: str) -> PatientDto:

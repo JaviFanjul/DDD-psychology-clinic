@@ -1,5 +1,5 @@
 import pytest
-from core.application.command.register_patient import RegisterPatientCommandHandler
+from core.application.command.create_patient import CreatePatientCommandHandler
 from core.domain.domain_event import DomainEvent
 from core.domain.event_bus import EventBus
 from core.domain.model.patient.patient import Patient
@@ -39,5 +39,5 @@ def event_bus() -> SpyEventBus:
 @pytest.fixture
 def handler(
     repository: SpyPatientCommandRepository, event_bus: SpyEventBus
-) -> RegisterPatientCommandHandler:
-    return RegisterPatientCommandHandler(repository, event_bus)
+) -> CreatePatientCommandHandler:
+    return CreatePatientCommandHandler(repository, event_bus)
