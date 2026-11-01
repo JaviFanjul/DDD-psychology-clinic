@@ -11,7 +11,7 @@ from core.domain.query_bus import Query, QueryHandler
 
 @dataclass(frozen=True)
 class GetPatientQuery(Query[PatientDto]):
-    id: str
+    id: PatientId
 
 
 class GetPatientQueryHandler(QueryHandler[GetPatientQuery, PatientDto]):
@@ -19,7 +19,7 @@ class GetPatientQueryHandler(QueryHandler[GetPatientQuery, PatientDto]):
         self._repository = repository
 
     def handle(self, query: GetPatientQuery) -> PatientDto:
-        patient = self._repository.find_by_id(PatientId.from_string(query.id))
+        patient: PatientDto | None = self._repository.find_by_id(query.id)
         if patient is None:
-            raise PatientNotFound(query.id)
+            raise PatientNotFound(str(query.id))
         return patient

@@ -27,9 +27,11 @@ class PatientController:
         self._query_bus = query_bus
 
     def register(self, email: str) -> str:
-        id = PatientId.generate()
-        self._command_bus.handle(RegisterPatientCommand(id=id, email=PatientEmail(email)))
-        return str(id)
+        patient_id: PatientId = PatientId.generate()
+        patient_email: PatientEmail = PatientEmail(email)
+        self._command_bus.handle(RegisterPatientCommand(id=patient_id, email=patient_email))
+        return str(patient_id)
 
     def get(self, id: str) -> PatientDto:
-        return self._query_bus.handle(GetPatientQuery(id=id))
+        patient_id: PatientId = PatientId.from_string(id)
+        return self._query_bus.handle(GetPatientQuery(id=patient_id))

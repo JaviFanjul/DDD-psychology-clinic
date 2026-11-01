@@ -1,7 +1,7 @@
 import pytest
 from core.application.command.register_patient import RegisterPatientCommand
 from core.application.query.get_patient import GetPatientQuery
-from core.domain.model.patient.errors import InvalidPatientEmail
+from core.domain.model.patient.errors import InvalidPatientEmail, InvalidPatientId
 from core.domain.model.patient.patient_email import PatientEmail
 from core.domain.model.patient.patient_id import PatientId
 
@@ -37,5 +37,14 @@ def test_given_an_id_when_getting_then_it_dispatches_the_query_and_returns_its_r
 ):
     patient = controller.get(patient_dto.id)
 
-    assert query_bus.handled == [GetPatientQuery(id=patient_dto.id)]
+    assert query_bus.handled == [GetPatientQuery(id=PatientId.from_string(patient_dto.id))]
     assert patient == patient_dto
+
+
+def test_given_a_malformed_id_when_getting_then_it_raises_and_dispatches_nothing(
+    controller, query_bus
+):
+    with pytest.raises(InvalidPatientId):
+        controller.get("not-a-uuid")
+
+    assert query_bus.handled == []

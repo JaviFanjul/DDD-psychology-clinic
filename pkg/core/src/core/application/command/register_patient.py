@@ -20,6 +20,6 @@ class RegisterPatientCommandHandler(CommandHandler[RegisterPatientCommand]):
         self._event_bus = event_bus
 
     def handle(self, command: RegisterPatientCommand) -> None:
-        patient = Patient.register(command.id, command.email)
+        patient: Patient = Patient.register(command.id, command.email)
         self._repository.save(patient)
         self._event_bus.publish(patient.pull_events())

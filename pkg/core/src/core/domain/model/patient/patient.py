@@ -12,11 +12,11 @@ class Patient:
 
     @classmethod
     def register(cls, id: PatientId, email: PatientEmail) -> Patient:
-        patient = cls(id, email)
+        patient: Patient = cls(id, email)
         patient._events.append(PatientRegistered(id))
         return patient
 
     def pull_events(self) -> list[DomainEvent]:
-        events = self._events
+        events: list[DomainEvent] = self._events
         self._events = []
         return events
