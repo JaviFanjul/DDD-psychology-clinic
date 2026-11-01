@@ -1,0 +1,16 @@
+[project]
+name = "ci-scripts"
+version = "0.1.0"
+requires-python = "==3.14.4"
+dependencies = []
+
+[project.scripts]
+check-member-dependencies = "ci.scripts.check_member_dependencies:main"
+
+[build-system]
+requires = ["uv_build==0.11.29"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "ci.scripts"
+namespace = true

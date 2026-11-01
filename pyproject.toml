@@ -1,5 +1,12 @@
+[tool.uv]
+constraint-dependencies = [
+    "fastapi==0.162.0",
+    "psycopg==3.3.6",
+    "sqlalchemy==2.1.6",
+]
+
 [tool.uv.workspace]
-members = ["pkg/*"]
+members = ["pkg/*", "ci/scripts"]
 
 [dependency-groups]
 dev = [
@@ -11,11 +18,10 @@ dev = [
 
 [tool.mypy]
 strict = true
-mypy_path = "pkg/core/src"
-files = ["pkg/core/src"]
+mypy_path = "pkg/core/src:ci/scripts/src"
+files = ["pkg/core/src", "ci/scripts/src"]
 namespace_packages = true
 explicit_package_bases = true
-no_site_packages = true
 
 [tool.importlinter]
 root_package = "core"
