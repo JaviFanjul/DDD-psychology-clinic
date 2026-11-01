@@ -17,4 +17,4 @@ class InMemoryEventBus(EventBus):
     def publish(self, events: list[DomainEvent]) -> None:
         for event in events:
             for handler in self._handlers.get(type(event), []):
-                handler.handle(event)
+                handler.handle(event=event)

@@ -24,8 +24,30 @@ class SpyQueryBus(QueryBus):
 
 
 @pytest.fixture
+def create_data() -> dict[str, str]:
+    return {
+        "email": "ana@gmail.com",
+        "first_name": "Ana",
+        "last_names": "García López",
+        "street": "Calle Mayor 3, 2º B",
+        "postal_code": "08001",
+        "city": "Barcelona",
+        "province": "Barcelona",
+    }
+
+
+@pytest.fixture
 def patient_dto() -> PatientDto:
-    return PatientDto(id="7c9e6679-7425-40de-944b-e07fc1f90ae7", email="ana@gmail.com")
+    return PatientDto(
+        id="7c9e6679-7425-40de-944b-e07fc1f90ae7",
+        email="ana@gmail.com",
+        first_name="Ana",
+        last_names="García López",
+        street="Calle Mayor 3, 2º B",
+        postal_code="08001",
+        city="Barcelona",
+        province="Barcelona",
+    )
 
 
 @pytest.fixture
@@ -35,9 +57,9 @@ def command_bus() -> SpyCommandBus:
 
 @pytest.fixture
 def query_bus(patient_dto: PatientDto) -> SpyQueryBus:
-    return SpyQueryBus(patient_dto)
+    return SpyQueryBus(result=patient_dto)
 
 
 @pytest.fixture
 def controller(command_bus: SpyCommandBus, query_bus: SpyQueryBus) -> PatientController:
-    return PatientController(command_bus, query_bus)
+    return PatientController(command_bus=command_bus, query_bus=query_bus)

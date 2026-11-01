@@ -12,7 +12,7 @@ class SomethingHappened(DomainEvent):
 def test_given_no_created_at_when_creating_an_event_then_it_holds_the_current_utc_time():
     before = datetime.now(UTC)
 
-    event = SomethingHappened("a payload")
+    event = SomethingHappened(payload="a payload")
 
     after = datetime.now(UTC)
     assert before <= event.created_at <= after

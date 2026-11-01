@@ -73,8 +73,8 @@ def command_bus(
     first_handler: SpyCommandHandler, second_handler: SpyCommandHandler
 ) -> InMemoryCommandBus:
     bus = InMemoryCommandBus()
-    bus.register(FirstCommand, first_handler)
-    bus.register(SecondCommand, second_handler)
+    bus.register(command_type=FirstCommand, handler=first_handler)
+    bus.register(command_type=SecondCommand, handler=second_handler)
     return bus
 
 
@@ -115,9 +115,9 @@ def event_bus(
     handler_of_second_event: SpyEventHandler,
 ) -> InMemoryEventBus:
     bus = InMemoryEventBus()
-    bus.register(FirstEvent, first_handler_of_first_event)
-    bus.register(FirstEvent, second_handler_of_first_event)
-    bus.register(SecondEvent, handler_of_second_event)
+    bus.register(event_type=FirstEvent, handler=first_handler_of_first_event)
+    bus.register(event_type=FirstEvent, handler=second_handler_of_first_event)
+    bus.register(event_type=SecondEvent, handler=handler_of_second_event)
     return bus
 
 
@@ -129,6 +129,6 @@ def first_query() -> FirstQuery:
 @pytest.fixture
 def query_bus() -> InMemoryQueryBus:
     bus = InMemoryQueryBus()
-    bus.register(FirstQuery, StubQueryHandler("first result"))
-    bus.register(SecondQuery, StubQueryHandler("second result"))
+    bus.register(query_type=FirstQuery, handler=StubQueryHandler(result="first result"))
+    bus.register(query_type=SecondQuery, handler=StubQueryHandler(result="second result"))
     return bus

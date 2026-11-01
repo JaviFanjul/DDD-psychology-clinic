@@ -13,4 +13,4 @@ class InMemoryCommandBus(CommandBus):
         self._handlers[command_type] = handler
 
     def handle(self, command: Command) -> None:
-        self._handlers[type(command)].handle(command)
+        self._handlers[type(command)].handle(command=command)
