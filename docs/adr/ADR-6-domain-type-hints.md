@@ -15,9 +15,10 @@ Function signatures already declare their types, but a local variable doesn't sh
 3. **Primitives:** local variables holding primitives don't need a hint, such as `normalized` in `PatientEmail`.
 4. **Scope:** this applies to the code in `src/`, not to tests.
 5. **Loop variables:** they stay without a hint, because Python doesn't allow annotating them inline.
+6. **Type checker:** mypy checks `src/` in strict mode, in the `types` CI job.
 
 ## Consequences
 
 - The boundary between primitives and domain types can be seen at a glance.
 - Some lines repeat the type, as in `patient_email: PatientEmail = PatientEmail(email)`.
-- Nothing enforces this automatically: it depends on reviews, because the project has no type checker or lint rule for it.
+- mypy rejects a hint that doesn't match the value, but it infers local types instead of requiring them, so leaving a hint out still depends on reviews to catch.
