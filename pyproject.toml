@@ -3,6 +3,7 @@ members = ["pkg/*"]
 
 [dependency-groups]
 dev = [
+    "import-linter==2.15",
     "mypy==2.4.1",
     "pytest==9.2.0",
     "ruff==0.17.3",
@@ -15,3 +16,16 @@ files = ["pkg/core/src"]
 namespace_packages = true
 explicit_package_bases = true
 no_site_packages = true
+
+[tool.importlinter]
+root_package = "core"
+
+[[tool.importlinter.contracts]]
+name = "Hexagonal layers"
+type = "layers"
+containers = ["core"]
+layers = [
+    "entrypoint | infrastructure",
+    "application",
+    "domain",
+]
