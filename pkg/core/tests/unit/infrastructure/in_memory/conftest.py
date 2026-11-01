@@ -1,7 +1,10 @@
 import pytest
 from core.domain.command_bus import Command, CommandHandler
+from core.domain.domain_event import DomainEvent
+from core.domain.event_bus import EventHandler
 from core.domain.query_bus import Query, QueryHandler
 from core.infrastructure.in_memory.in_memory_command_bus import InMemoryCommandBus
+from core.infrastructure.in_memory.in_memory_event_bus import InMemoryEventBus
 from core.infrastructure.in_memory.in_memory_query_bus import InMemoryQueryBus
 
 
@@ -17,6 +20,23 @@ class SpyCommandHandler(CommandHandler[Command]):
 
     def handle(self, command: Command) -> None:
         self.handled.append(command)
+
+
+class FirstEvent(DomainEvent): ...
+
+
+class SecondEvent(DomainEvent): ...
+
+
+class UnhandledEvent(DomainEvent): ...
+
+
+class SpyEventHandler(EventHandler[DomainEvent]):
+    def __init__(self) -> None:
+        self.handled: list[DomainEvent] = []
+
+    def handle(self, event: DomainEvent) -> None:
+        self.handled.append(event)
 
 
 class FirstQuery(Query[str]): ...
@@ -55,6 +75,49 @@ def command_bus(
     bus = InMemoryCommandBus()
     bus.register(FirstCommand, first_handler)
     bus.register(SecondCommand, second_handler)
+    return bus
+
+
+@pytest.fixture
+def first_event() -> FirstEvent:
+    return FirstEvent()
+
+
+@pytest.fixture
+def second_event() -> SecondEvent:
+    return SecondEvent()
+
+
+@pytest.fixture
+def unhandled_event() -> UnhandledEvent:
+    return UnhandledEvent()
+
+
+@pytest.fixture
+def first_handler_of_first_event() -> SpyEventHandler:
+    return SpyEventHandler()
+
+
+@pytest.fixture
+def second_handler_of_first_event() -> SpyEventHandler:
+    return SpyEventHandler()
+
+
+@pytest.fixture
+def handler_of_second_event() -> SpyEventHandler:
+    return SpyEventHandler()
+
+
+@pytest.fixture
+def event_bus(
+    first_handler_of_first_event: SpyEventHandler,
+    second_handler_of_first_event: SpyEventHandler,
+    handler_of_second_event: SpyEventHandler,
+) -> InMemoryEventBus:
+    bus = InMemoryEventBus()
+    bus.register(FirstEvent, first_handler_of_first_event)
+    bus.register(FirstEvent, second_handler_of_first_event)
+    bus.register(SecondEvent, handler_of_second_event)
     return bus
 
 
