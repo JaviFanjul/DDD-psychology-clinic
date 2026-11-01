@@ -18,3 +18,6 @@ class PatientId:
             return cls(id=UUID(id))
         except ValueError as error:
             raise InvalidPatientId(id) from error
+
+    def __str__(self) -> str:
+        return str(self.id)

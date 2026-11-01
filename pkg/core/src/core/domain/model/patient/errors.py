@@ -9,3 +9,8 @@ class InvalidPatientId(DomainError):
 class InvalidPatientEmail(DomainError):
     def __init__(self) -> None:
         super().__init__("The patient email is not valid")
+
+
+class PatientNotFound(DomainError):
+    def __init__(self, id: str) -> None:
+        super().__init__(f"Patient {id!r} was not found")

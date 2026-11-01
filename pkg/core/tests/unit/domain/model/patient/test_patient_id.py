@@ -28,3 +28,11 @@ def test_given_a_malformed_string_when_parsing_then_it_raises_invalid_patient_id
 
     with pytest.raises(InvalidPatientId):
         PatientId.from_string(malformed_string)
+
+
+def test_given_a_patient_id_when_converting_to_string_then_it_returns_the_uuid_string():
+    patient_id = PatientId.from_string(A_UUID_STRING)
+
+    string = str(patient_id)
+
+    assert string == A_UUID_STRING
