@@ -13,5 +13,5 @@ class InMemoryQueryBus(QueryBus):
         self._handlers[query_type] = handler
 
     def handle[TResult](self, query: Query[TResult]) -> TResult:
-        result: TResult = self._handlers[type(query)].handle(query)
+        result: TResult = self._handlers[type(query)].handle(query=query)
         return result

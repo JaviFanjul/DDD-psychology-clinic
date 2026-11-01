@@ -8,6 +8,12 @@ from core.domain.model.patient.patient_id import PatientId
 class PatientDto:
     id: str
     email: str
+    first_name: str
+    last_names: str
+    street: str
+    postal_code: str
+    city: str
+    province: str
 
 
 class PatientQueryRepository(ABC):

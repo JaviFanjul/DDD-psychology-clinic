@@ -18,14 +18,14 @@ from core.domain.model.patient.patient_email import PatientEmail
 )
 def test_given_an_invalid_value_when_creating_then_it_raises_invalid_patient_email(invalid_email):
     with pytest.raises(InvalidPatientEmail):
-        PatientEmail(invalid_email)
+        PatientEmail(value=invalid_email)
 
 
 def test_given_an_invalid_email_when_creating_then_the_error_does_not_expose_it():
     invalid_email = "ana.garcia@gmail"
 
     with pytest.raises(InvalidPatientEmail) as error:
-        PatientEmail(invalid_email)
+        PatientEmail(value=invalid_email)
 
     assert invalid_email not in str(error.value)
 
@@ -39,6 +39,6 @@ def test_given_an_invalid_email_when_creating_then_the_error_does_not_expose_it(
     ],
 )
 def test_given_a_valid_email_when_creating_then_it_holds_its_normalized_form(raw_email, expected):
-    email = PatientEmail(raw_email)
+    email = PatientEmail(value=raw_email)
 
     assert email.value == expected
