@@ -8,14 +8,13 @@ from patients.domain.model.patient.errors import InvalidPatientId
 class PatientId:
     id: UUID
 
-    def __post_init__(self) -> None:
-        if not isinstance(self.id, UUID):
-            raise InvalidPatientId(f"{self.id!r} is not a UUID")
-
     @classmethod
     def generate(cls) -> PatientId:
         return cls(id=uuid4())
 
     @classmethod
     def from_string(cls, id: str) -> PatientId:
-        return cls(id=UUID(id))
+        try:
+            return cls(id=UUID(id))
+        except ValueError as error:
+            raise InvalidPatientId(id) from error

@@ -7,13 +7,6 @@ from patients.domain.model.patient.patient_id import PatientId
 A_UUID_STRING = "12345678-1234-4678-9234-567812345678"
 
 
-def test_given_a_value_that_is_not_a_uuid_when_creating_then_it_raises_invalid_patient_id():
-    not_a_uuid = A_UUID_STRING
-
-    with pytest.raises(InvalidPatientId):
-        PatientId(not_a_uuid)
-
-
 def test_given_a_generated_id_when_generating_another_then_their_uuids_differ():
     first = PatientId.generate()
 
@@ -28,3 +21,10 @@ def test_given_a_valid_string_when_parsing_then_it_holds_the_matching_uuid():
     patient_id = PatientId.from_string(valid_string)
 
     assert patient_id.id == UUID(valid_string)
+
+
+def test_given_a_malformed_string_when_parsing_then_it_raises_invalid_patient_id():
+    malformed_string = "not-a-uuid"
+
+    with pytest.raises(InvalidPatientId):
+        PatientId.from_string(malformed_string)
