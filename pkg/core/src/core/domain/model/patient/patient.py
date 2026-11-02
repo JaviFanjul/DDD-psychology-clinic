@@ -4,6 +4,7 @@ from core.domain.model.patient.patient_address import PatientAddress
 from core.domain.model.patient.patient_email import PatientEmail
 from core.domain.model.patient.patient_id import PatientId
 from core.domain.model.patient.patient_name import PatientName
+from core.domain.model.patient.patient_phone import PatientPhone
 
 
 class Patient:
@@ -12,11 +13,13 @@ class Patient:
         id: PatientId,
         email: PatientEmail,
         name: PatientName,
+        phone: PatientPhone,
         address: PatientAddress,
     ) -> None:
         self.id = id
         self.email = email
         self.name = name
+        self.phone = phone
         self.address = address
         self._events: list[DomainEvent] = []
 
@@ -26,9 +29,10 @@ class Patient:
         id: PatientId,
         email: PatientEmail,
         name: PatientName,
+        phone: PatientPhone,
         address: PatientAddress,
     ) -> Patient:
-        patient: Patient = cls(id=id, email=email, name=name, address=address)
+        patient: Patient = cls(id=id, email=email, name=name, phone=phone, address=address)
         patient._events.append(PatientCreated(patient_id=id))
         return patient
 

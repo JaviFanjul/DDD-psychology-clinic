@@ -7,6 +7,7 @@ from core.domain.model.patient.patient_address import PatientAddress
 from core.domain.model.patient.patient_email import PatientEmail
 from core.domain.model.patient.patient_id import PatientId
 from core.domain.model.patient.patient_name import PatientName
+from core.domain.model.patient.patient_phone import PatientPhone
 from core.infrastructure.postgres.base import Base
 from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
@@ -57,6 +58,7 @@ def patient() -> Patient:
         id=PatientId.from_string(id="7c9e6679-7425-40de-944b-e07fc1f90ae7"),
         email=PatientEmail(value="ana@gmail.com"),
         name=PatientName(first_name="Ana", last_names="García López"),
+        phone=PatientPhone(prefix="+34", number="612345678"),
         address=PatientAddress(
             street="Calle Mayor 3, 2º B",
             postal_code="08001",

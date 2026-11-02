@@ -23,6 +23,8 @@ async def test_given_a_saved_patient_when_finding_it_then_it_returns_its_dto(ses
         email="ana@gmail.com",
         first_name="Ana",
         last_names="García López",
+        phone_prefix="+34",
+        phone_number="612345678",
         street="Calle Mayor 3, 2º B",
         postal_code="08001",
         city="Barcelona",

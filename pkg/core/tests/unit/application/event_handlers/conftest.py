@@ -40,6 +40,8 @@ def known_patient() -> PatientDto:
         email="ana@gmail.com",
         first_name="Ana",
         last_names="García López",
+        phone_prefix="+34",
+        phone_number="612345678",
         street="Calle Mayor 3, 2º B",
         postal_code="08001",
         city="Barcelona",

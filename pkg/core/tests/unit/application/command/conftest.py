@@ -7,6 +7,7 @@ from core.domain.model.patient.patient_address import PatientAddress
 from core.domain.model.patient.patient_command_repository import PatientCommandRepository
 from core.domain.model.patient.patient_id import PatientId
 from core.domain.model.patient.patient_name import PatientName
+from core.domain.model.patient.patient_phone import PatientPhone
 
 
 class SpyPatientCommandRepository(PatientCommandRepository):
@@ -31,6 +32,11 @@ class SpyEventBus(EventBus):
 @pytest.fixture
 def patient_name() -> PatientName:
     return PatientName(first_name="Ana", last_names="García López")
+
+
+@pytest.fixture
+def patient_phone() -> PatientPhone:
+    return PatientPhone(prefix="+34", number="612345678")
 
 
 @pytest.fixture

@@ -16,6 +16,11 @@ class InvalidPatientName(DomainError):
         super().__init__("The patient name is not valid")
 
 
+class InvalidPatientPhone(DomainError):
+    def __init__(self) -> None:
+        super().__init__("The patient phone is not valid")
+
+
 class InvalidPatientAddress(DomainError):
     def __init__(self) -> None:
         super().__init__("The patient address is not valid")

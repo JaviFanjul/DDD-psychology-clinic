@@ -10,6 +10,8 @@ class PatientDto:
     email: str
     first_name: str
     last_names: str
+    phone_prefix: str
+    phone_number: str
     street: str
     postal_code: str
     city: str

@@ -3,6 +3,7 @@ from core.domain.model.patient.patient_address import PatientAddress
 from core.domain.model.patient.patient_email import PatientEmail
 from core.domain.model.patient.patient_id import PatientId
 from core.domain.model.patient.patient_name import PatientName
+from core.domain.model.patient.patient_phone import PatientPhone
 from core.domain.model.patient.patient_query_repository import PatientDto
 from core.infrastructure.postgres.patient_model import PatientModel
 
@@ -15,6 +16,8 @@ class PatientMapper:
             email=patient.email.value,
             first_name=patient.name.first_name,
             last_names=patient.name.last_names,
+            phone_prefix=patient.phone.prefix,
+            phone_number=patient.phone.number,
             street=patient.address.street,
             postal_code=patient.address.postal_code,
             city=patient.address.city,
@@ -27,6 +30,7 @@ class PatientMapper:
             id=PatientId(id=model.id),
             email=PatientEmail(value=model.email),
             name=PatientName(first_name=model.first_name, last_names=model.last_names),
+            phone=PatientPhone(prefix=model.phone_prefix, number=model.phone_number),
             address=PatientAddress(
                 street=model.street,
                 postal_code=model.postal_code,
@@ -42,6 +46,8 @@ class PatientMapper:
             email=model.email,
             first_name=model.first_name,
             last_names=model.last_names,
+            phone_prefix=model.phone_prefix,
+            phone_number=model.phone_number,
             street=model.street,
             postal_code=model.postal_code,
             city=model.city,

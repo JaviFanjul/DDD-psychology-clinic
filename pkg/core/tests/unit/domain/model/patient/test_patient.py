@@ -3,15 +3,20 @@ from core.domain.model.patient.patient import Patient
 
 
 def test_given_its_data_when_creating_then_the_patient_holds_it(
-    patient_id, patient_email, patient_name, patient_address
+    patient_id, patient_email, patient_name, patient_phone, patient_address
 ):
     patient = Patient.create(
-        id=patient_id, email=patient_email, name=patient_name, address=patient_address
+        id=patient_id,
+        email=patient_email,
+        name=patient_name,
+        phone=patient_phone,
+        address=patient_address,
     )
 
     assert patient.id == patient_id
     assert patient.email == patient_email
     assert patient.name == patient_name
+    assert patient.phone == patient_phone
     assert patient.address == patient_address
 
 
@@ -35,10 +40,14 @@ def test_given_events_already_pulled_when_pulling_again_then_it_returns_no_event
 
 
 def test_given_a_patient_built_with_the_constructor_when_pulling_then_it_returns_no_events(
-    patient_id, patient_email, patient_name, patient_address
+    patient_id, patient_email, patient_name, patient_phone, patient_address
 ):
     patient = Patient(
-        id=patient_id, email=patient_email, name=patient_name, address=patient_address
+        id=patient_id,
+        email=patient_email,
+        name=patient_name,
+        phone=patient_phone,
+        address=patient_address,
     )
 
     events = patient.pull_events()
