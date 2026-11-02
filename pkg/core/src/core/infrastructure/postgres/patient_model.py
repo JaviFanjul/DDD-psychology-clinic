@@ -11,6 +11,8 @@ class PatientModel(Base):
     email: Mapped[str]
     first_name: Mapped[str]
     last_names: Mapped[str]
+    phone_prefix: Mapped[str]
+    phone_number: Mapped[str]
     street: Mapped[str]
     postal_code: Mapped[str]
     city: Mapped[str]

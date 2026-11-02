@@ -6,11 +6,13 @@ from core.domain.model.patient.errors import (
     InvalidPatientEmail,
     InvalidPatientId,
     InvalidPatientName,
+    InvalidPatientPhone,
 )
 from core.domain.model.patient.patient_address import PatientAddress
 from core.domain.model.patient.patient_email import PatientEmail
 from core.domain.model.patient.patient_id import PatientId
 from core.domain.model.patient.patient_name import PatientName
+from core.domain.model.patient.patient_phone import PatientPhone
 
 
 async def test_given_valid_data_when_creating_then_it_dispatches_the_command_with_the_returned_id(
@@ -23,6 +25,7 @@ async def test_given_valid_data_when_creating_then_it_dispatches_the_command_wit
             id=PatientId.from_string(id=id),
             email=PatientEmail(value="ana@gmail.com"),
             name=PatientName(first_name="Ana", last_names="García López"),
+            phone=PatientPhone(prefix="+34", number="612345678"),
             address=PatientAddress(
                 street="Calle Mayor 3, 2º B",
                 postal_code="08001",
@@ -45,6 +48,7 @@ async def test_given_two_creations_when_creating_then_each_gets_its_own_id(contr
     [
         ("email", "not-an-email", InvalidPatientEmail),
         ("first_name", "   ", InvalidPatientName),
+        ("phone_number", "123", InvalidPatientPhone),
         ("postal_code", "0800", InvalidPatientAddress),
     ],
 )

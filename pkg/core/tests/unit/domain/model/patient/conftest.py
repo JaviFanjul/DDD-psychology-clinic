@@ -4,6 +4,7 @@ from core.domain.model.patient.patient_address import PatientAddress
 from core.domain.model.patient.patient_email import PatientEmail
 from core.domain.model.patient.patient_id import PatientId
 from core.domain.model.patient.patient_name import PatientName
+from core.domain.model.patient.patient_phone import PatientPhone
 
 
 @pytest.fixture
@@ -22,6 +23,11 @@ def patient_name() -> PatientName:
 
 
 @pytest.fixture
+def patient_phone() -> PatientPhone:
+    return PatientPhone(prefix="+34", number="612345678")
+
+
+@pytest.fixture
 def patient_address() -> PatientAddress:
     return PatientAddress(
         street="Calle Mayor 3, 2º B", postal_code="08001", city="Barcelona", province="Barcelona"
@@ -33,8 +39,13 @@ def created_patient(
     patient_id: PatientId,
     patient_email: PatientEmail,
     patient_name: PatientName,
+    patient_phone: PatientPhone,
     patient_address: PatientAddress,
 ) -> Patient:
     return Patient.create(
-        id=patient_id, email=patient_email, name=patient_name, address=patient_address
+        id=patient_id,
+        email=patient_email,
+        name=patient_name,
+        phone=patient_phone,
+        address=patient_address,
     )

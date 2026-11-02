@@ -10,6 +10,8 @@ def test_given_a_patient_when_mapping_to_model_then_it_flattens_its_value_object
         mapped.email,
         mapped.first_name,
         mapped.last_names,
+        mapped.phone_prefix,
+        mapped.phone_number,
         mapped.street,
         mapped.postal_code,
         mapped.city,
@@ -19,6 +21,8 @@ def test_given_a_patient_when_mapping_to_model_then_it_flattens_its_value_object
         model.email,
         model.first_name,
         model.last_names,
+        model.phone_prefix,
+        model.phone_number,
         model.street,
         model.postal_code,
         model.city,
@@ -34,6 +38,7 @@ def test_given_a_model_when_mapping_to_entity_then_it_rebuilds_the_patient_witho
     assert mapped.id == patient.id
     assert mapped.email == patient.email
     assert mapped.name == patient.name
+    assert mapped.phone == patient.phone
     assert mapped.address == patient.address
     assert mapped.pull_events() == []
 
@@ -46,6 +51,8 @@ def test_given_a_model_when_mapping_to_dto_then_it_copies_its_columns(model):
         email="ana@gmail.com",
         first_name="Ana",
         last_names="García López",
+        phone_prefix="+34",
+        phone_number="612345678",
         street="Calle Mayor 3, 2º B",
         postal_code="08001",
         city="Barcelona",

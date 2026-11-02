@@ -9,6 +9,7 @@ from core.domain.model.patient.errors import (
     InvalidPatientEmail,
     InvalidPatientId,
     InvalidPatientName,
+    InvalidPatientPhone,
     PatientNotFound,
     PatientNotLoaded,
     PatientNotSaved,
@@ -17,6 +18,7 @@ from core.domain.model.patient.patient_address import PatientAddress
 from core.domain.model.patient.patient_email import PatientEmail
 from core.domain.model.patient.patient_id import PatientId
 from core.domain.model.patient.patient_name import PatientName
+from core.domain.model.patient.patient_phone import PatientPhone
 from core.domain.model.patient.patient_query_repository import PatientDto
 from core.domain.query_bus import QueryBus
 
@@ -24,6 +26,7 @@ STATUS_BY_ERROR: dict[type[DomainError], HTTPStatus] = {
     InvalidPatientId: HTTPStatus.UNPROCESSABLE_CONTENT,
     InvalidPatientEmail: HTTPStatus.UNPROCESSABLE_CONTENT,
     InvalidPatientName: HTTPStatus.UNPROCESSABLE_CONTENT,
+    InvalidPatientPhone: HTTPStatus.UNPROCESSABLE_CONTENT,
     InvalidPatientAddress: HTTPStatus.UNPROCESSABLE_CONTENT,
     PatientNotFound: HTTPStatus.NOT_FOUND,
     PatientNotSaved: HTTPStatus.INTERNAL_SERVER_ERROR,
@@ -41,6 +44,8 @@ class PatientController:
         email: str,
         first_name: str,
         last_names: str,
+        phone_prefix: str,
+        phone_number: str,
         street: str,
         postal_code: str,
         city: str,
@@ -49,6 +54,7 @@ class PatientController:
         patient_id: PatientId = PatientId.generate()
         patient_email: PatientEmail = PatientEmail(value=email)
         patient_name: PatientName = PatientName(first_name=first_name, last_names=last_names)
+        patient_phone: PatientPhone = PatientPhone(prefix=phone_prefix, number=phone_number)
         patient_address: PatientAddress = PatientAddress(
             street=street, postal_code=postal_code, city=city, province=province
         )
@@ -57,6 +63,7 @@ class PatientController:
                 id=patient_id,
                 email=patient_email,
                 name=patient_name,
+                phone=patient_phone,
                 address=patient_address,
             )
         )
