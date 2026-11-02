@@ -14,7 +14,7 @@ class InMemoryEventBus(EventBus):
     ) -> None:
         self._handlers[event_type].append(handler)
 
-    def publish(self, events: list[DomainEvent]) -> None:
+    async def publish(self, events: list[DomainEvent]) -> None:
         for event in events:
             for handler in self._handlers.get(type(event), []):
-                handler.handle(event=event)
+                await handler.handle(event=event)

@@ -9,7 +9,7 @@ class SpyCommandBus(CommandBus):
     def __init__(self) -> None:
         self.handled: list[Command] = []
 
-    def handle(self, command: Command) -> None:
+    async def handle(self, command: Command) -> None:
         self.handled.append(command)
 
 
@@ -18,7 +18,7 @@ class SpyQueryBus(QueryBus):
         self._result = result
         self.handled: list[Query] = []
 
-    def handle[TResult](self, query: Query[TResult]) -> TResult:
+    async def handle[TResult](self, query: Query[TResult]) -> TResult:
         self.handled.append(query)
         return self._result
 

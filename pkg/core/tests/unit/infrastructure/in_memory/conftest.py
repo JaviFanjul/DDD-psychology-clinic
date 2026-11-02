@@ -18,7 +18,7 @@ class SpyCommandHandler(CommandHandler[Command]):
     def __init__(self) -> None:
         self.handled: list[Command] = []
 
-    def handle(self, command: Command) -> None:
+    async def handle(self, command: Command) -> None:
         self.handled.append(command)
 
 
@@ -35,7 +35,7 @@ class SpyEventHandler(EventHandler[DomainEvent]):
     def __init__(self) -> None:
         self.handled: list[DomainEvent] = []
 
-    def handle(self, event: DomainEvent) -> None:
+    async def handle(self, event: DomainEvent) -> None:
         self.handled.append(event)
 
 
@@ -49,7 +49,7 @@ class StubQueryHandler(QueryHandler[Query[str], str]):
     def __init__(self, result: str) -> None:
         self._result = result
 
-    def handle(self, query: Query[str]) -> str:
+    async def handle(self, query: Query[str]) -> str:
         return self._result
 
 

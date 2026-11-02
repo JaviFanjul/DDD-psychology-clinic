@@ -4,13 +4,13 @@ from core.domain.model.patient.patient_email import PatientEmail
 from core.domain.model.patient.patient_id import PatientId
 
 
-def test_given_a_command_when_handling_then_the_patient_is_saved(
+async def test_given_a_command_when_handling_then_the_patient_is_saved(
     handler, repository, patient_name, patient_address
 ):
     id = PatientId.generate()
     email = PatientEmail(value="ana@gmail.com")
 
-    handler.handle(
+    await handler.handle(
         command=CreatePatientCommand(id=id, email=email, name=patient_name, address=patient_address)
     )
 
@@ -21,12 +21,12 @@ def test_given_a_command_when_handling_then_the_patient_is_saved(
     assert patient.address == patient_address
 
 
-def test_given_a_command_when_handling_then_patient_created_is_published(
+async def test_given_a_command_when_handling_then_patient_created_is_published(
     handler, event_bus, patient_name, patient_address
 ):
     id = PatientId.generate()
 
-    handler.handle(
+    await handler.handle(
         command=CreatePatientCommand(
             id=id,
             email=PatientEmail(value="ana@gmail.com"),

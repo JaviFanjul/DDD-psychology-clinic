@@ -13,10 +13,10 @@ class SpyPatientCommandRepository(PatientCommandRepository):
     def __init__(self) -> None:
         self.saved: list[Patient] = []
 
-    def save(self, patient: Patient) -> None:
+    async def save(self, patient: Patient) -> None:
         self.saved.append(patient)
 
-    def find_by_id(self, id: PatientId) -> Patient | None:
+    async def find_by_id(self, id: PatientId) -> Patient | None:
         return None
 
 
@@ -24,7 +24,7 @@ class SpyEventBus(EventBus):
     def __init__(self) -> None:
         self.published: list[DomainEvent] = []
 
-    def publish(self, events: list[DomainEvent]) -> None:
+    async def publish(self, events: list[DomainEvent]) -> None:
         self.published.extend(events)
 
 
