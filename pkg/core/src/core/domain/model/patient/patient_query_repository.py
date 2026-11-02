@@ -16,6 +16,7 @@ class PatientDto:
     postal_code: str
     city: str
     province: str
+    status: str
 
 
 class PatientQueryRepository(ABC):

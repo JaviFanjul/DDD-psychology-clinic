@@ -27,6 +27,7 @@ async def test_given_a_saved_patient_when_finding_it_then_it_returns_it(sessions
     assert found.name == patient.name
     assert found.phone == patient.phone
     assert found.address == patient.address
+    assert found.status == patient.status
 
 
 async def test_given_a_saved_patient_when_saving_it_changed_then_it_returns_the_changes(
@@ -39,10 +40,12 @@ async def test_given_a_saved_patient_when_saving_it_changed_then_it_returns_the_
     patient.address = PatientAddress(
         street="Gran Vía 1", postal_code="28013", city="Madrid", province="Madrid"
     )
+    patient.discharge()
 
     await save(sessions=sessions, patient=patient)
 
     found = await find_by_id(sessions=sessions, id=patient.id)
+    assert found.status == patient.status
     assert found.email == patient.email
     assert found.name == patient.name
     assert found.phone == patient.phone

@@ -5,6 +5,7 @@ from core.domain.model.patient.patient_id import PatientId
 from core.domain.model.patient.patient_name import PatientName
 from core.domain.model.patient.patient_phone import PatientPhone
 from core.domain.model.patient.patient_query_repository import PatientDto
+from core.domain.model.patient.patient_status import PatientStatus
 from core.infrastructure.postgres.patient_model import PatientModel
 
 
@@ -22,6 +23,7 @@ class PatientMapper:
             postal_code=patient.address.postal_code,
             city=patient.address.city,
             province=patient.address.province,
+            status=patient.status.value,
         )
 
     @staticmethod
@@ -37,6 +39,7 @@ class PatientMapper:
                 city=model.city,
                 province=model.province,
             ),
+            status=PatientStatus(model.status),
         )
 
     @staticmethod
@@ -52,4 +55,5 @@ class PatientMapper:
             postal_code=model.postal_code,
             city=model.city,
             province=model.province,
+            status=model.status,
         )

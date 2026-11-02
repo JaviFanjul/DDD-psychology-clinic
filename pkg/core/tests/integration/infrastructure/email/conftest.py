@@ -81,4 +81,5 @@ def patient() -> PatientDto:
         postal_code="08001",
         city="Barcelona",
         province="Barcelona",
+        status="active",
     )

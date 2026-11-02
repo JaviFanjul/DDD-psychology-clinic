@@ -8,6 +8,7 @@ from core.domain.model.patient.patient_email import PatientEmail
 from core.domain.model.patient.patient_id import PatientId
 from core.domain.model.patient.patient_name import PatientName
 from core.domain.model.patient.patient_phone import PatientPhone
+from core.domain.model.patient.patient_status import PatientStatus
 from core.infrastructure.postgres.base import Base
 from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
@@ -65,6 +66,7 @@ def patient() -> Patient:
             city="Barcelona",
             province="Barcelona",
         ),
+        status=PatientStatus.ACTIVE,
     )
 
 

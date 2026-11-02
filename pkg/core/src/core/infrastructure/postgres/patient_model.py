@@ -17,3 +17,4 @@ class PatientModel(Base):
     postal_code: Mapped[str]
     city: Mapped[str]
     province: Mapped[str]
+    status: Mapped[str]
