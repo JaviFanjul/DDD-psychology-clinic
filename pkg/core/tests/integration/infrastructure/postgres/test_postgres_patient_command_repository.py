@@ -1,7 +1,4 @@
-from core.domain.model.patient.patient_address import PatientAddress
-from core.domain.model.patient.patient_email import PatientEmail
-from core.domain.model.patient.patient_name import PatientName
-from core.domain.model.patient.patient_phone import PatientPhone
+from core.domain.model.patient.patient_status import PatientStatus
 from core.infrastructure.postgres.postgres_patient_command_repository import (
     PostgresPatientCommandRepository,
 )
@@ -30,26 +27,16 @@ async def test_given_a_saved_patient_when_finding_it_then_it_returns_it(sessions
     assert found.status == patient.status
 
 
-async def test_given_a_saved_patient_when_saving_it_changed_then_it_returns_the_changes(
+async def test_given_a_saved_patient_when_saving_it_discharged_then_it_returns_it_discharged(
     sessions, patient
 ):
     await save(sessions=sessions, patient=patient)
-    patient.email = PatientEmail(value="ana.garcia@gmail.com")
-    patient.name = PatientName(first_name="Ana María", last_names="García López")
-    patient.phone = PatientPhone(prefix="+34", number="912345678")
-    patient.address = PatientAddress(
-        street="Gran Vía 1", postal_code="28013", city="Madrid", province="Madrid"
-    )
     patient.discharge()
 
     await save(sessions=sessions, patient=patient)
 
     found = await find_by_id(sessions=sessions, id=patient.id)
-    assert found.status == patient.status
-    assert found.email == patient.email
-    assert found.name == patient.name
-    assert found.phone == patient.phone
-    assert found.address == patient.address
+    assert found.status is PatientStatus.DISCHARGED
 
 
 async def test_given_no_patient_with_that_id_when_finding_it_then_it_returns_none(

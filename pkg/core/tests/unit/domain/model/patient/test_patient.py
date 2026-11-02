@@ -6,6 +6,8 @@ from core.domain.model.patient.events import (
     PatientReadmitted,
 )
 from core.domain.model.patient.patient import Patient
+from core.domain.model.patient.patient_email import PatientEmail
+from core.domain.model.patient.patient_id import PatientId
 from core.domain.model.patient.patient_status import PatientStatus
 
 
@@ -124,3 +126,34 @@ def test_given_an_active_patient_when_readmitting_then_it_raises_and_records_not
         created_patient.readmit()
 
     assert created_patient.pull_events() == []
+
+
+def test_given_two_patients_with_the_same_id_when_comparing_then_they_are_equal(
+    created_patient, patient_id, patient_name, patient_phone, patient_address
+):
+    same_patient = Patient(
+        id=patient_id,
+        email=PatientEmail(value="ana.garcia@gmail.com"),
+        name=patient_name,
+        phone=patient_phone,
+        address=patient_address,
+        status=PatientStatus.DISCHARGED,
+    )
+
+    assert same_patient == created_patient
+    assert hash(same_patient) == hash(created_patient)
+
+
+def test_given_two_patients_with_different_ids_when_comparing_then_they_are_not_equal(
+    created_patient, patient_email, patient_name, patient_phone, patient_address
+):
+    other_patient = Patient(
+        id=PatientId.generate(),
+        email=patient_email,
+        name=patient_name,
+        phone=patient_phone,
+        address=patient_address,
+        status=PatientStatus.ACTIVE,
+    )
+
+    assert other_patient != created_patient
