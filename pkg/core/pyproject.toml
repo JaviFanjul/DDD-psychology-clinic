@@ -3,6 +3,7 @@ name = "core"
 version = "0.1.0"
 requires-python = "==3.14.4"
 dependencies = [
+    "aio-pika",
     "aiosmtplib",
     "fastapi",
     "psycopg[binary]",
