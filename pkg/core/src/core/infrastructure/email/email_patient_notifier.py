@@ -1,6 +1,7 @@
 from email.message import EmailMessage
 
 import aiosmtplib
+from core.domain.model.patient.errors import PatientNotNotified
 from core.domain.model.patient.patient_notifier import PatientNotifier
 from core.domain.model.patient.patient_query_repository import PatientDto
 
@@ -27,22 +28,25 @@ class EmailPatientNotifier(PatientNotifier):
 
     async def welcome(self, patient: PatientDto) -> None:
         await self._send(
-            to=patient.email,
+            patient=patient,
             subject=WELCOME_SUBJECT,
             body=WELCOME_BODY.format(first_name=patient.first_name),
         )
 
-    async def _send(self, to: str, subject: str, body: str) -> None:
+    async def _send(self, patient: PatientDto, subject: str, body: str) -> None:
         message = EmailMessage()
         message["From"] = self._sender
-        message["To"] = to
+        message["To"] = patient.email
         message["Subject"] = subject
         message.set_content(body)
-        await aiosmtplib.send(
-            message,
-            hostname=self._host,
-            port=self._port,
-            username=self._username,
-            password=self._password,
-            validate_certs=self._validate_certs,
-        )
+        try:
+            await aiosmtplib.send(
+                message,
+                hostname=self._host,
+                port=self._port,
+                username=self._username,
+                password=self._password,
+                validate_certs=self._validate_certs,
+            )
+        except aiosmtplib.SMTPException as error:
+            raise PatientNotNotified(id=patient.id) from error

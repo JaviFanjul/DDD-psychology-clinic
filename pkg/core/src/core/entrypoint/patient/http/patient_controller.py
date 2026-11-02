@@ -12,6 +12,7 @@ from core.domain.model.patient.errors import (
     InvalidPatientPhone,
     PatientNotFound,
     PatientNotLoaded,
+    PatientNotNotified,
     PatientNotSaved,
 )
 from core.domain.model.patient.patient_address import PatientAddress
@@ -31,6 +32,7 @@ STATUS_BY_ERROR: dict[type[DomainError], HTTPStatus] = {
     PatientNotFound: HTTPStatus.NOT_FOUND,
     PatientNotSaved: HTTPStatus.INTERNAL_SERVER_ERROR,
     PatientNotLoaded: HTTPStatus.INTERNAL_SERVER_ERROR,
+    PatientNotNotified: HTTPStatus.INTERNAL_SERVER_ERROR,
 }
 
 
