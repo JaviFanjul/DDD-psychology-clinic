@@ -24,3 +24,13 @@ class InvalidPatientAddress(DomainError):
 class PatientNotFound(DomainError):
     def __init__(self, id: str) -> None:
         super().__init__(f"Patient {id!r} was not found")
+
+
+class PatientNotSaved(DomainError):
+    def __init__(self, id: str) -> None:
+        super().__init__(f"Patient {id!r} could not be saved")
+
+
+class PatientNotLoaded(DomainError):
+    def __init__(self, id: str) -> None:
+        super().__init__(f"Patient {id!r} could not be loaded")
