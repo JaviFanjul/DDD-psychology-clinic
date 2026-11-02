@@ -1,6 +1,7 @@
 import pytest
 from core.application.command.create_patient import CreatePatientCommandHandler
 from core.application.command.discharge_patient import DischargePatientCommandHandler
+from core.application.command.readmit_patient import ReadmitPatientCommandHandler
 from core.domain.domain_event import DomainEvent
 from core.domain.event_bus import EventBus
 from core.domain.model.patient.patient import Patient
@@ -109,3 +110,10 @@ def discharge_handler(
     repository: SpyPatientCommandRepository, event_bus: SpyEventBus
 ) -> DischargePatientCommandHandler:
     return DischargePatientCommandHandler(repository=repository, event_bus=event_bus)
+
+
+@pytest.fixture
+def readmit_handler(
+    repository: SpyPatientCommandRepository, event_bus: SpyEventBus
+) -> ReadmitPatientCommandHandler:
+    return ReadmitPatientCommandHandler(repository=repository, event_bus=event_bus)

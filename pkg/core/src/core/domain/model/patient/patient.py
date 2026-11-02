@@ -1,6 +1,10 @@
 from core.domain.domain_event import DomainEvent
-from core.domain.model.patient.errors import PatientAlreadyDischarged
-from core.domain.model.patient.events import PatientCreated, PatientDischarged
+from core.domain.model.patient.errors import PatientAlreadyActive, PatientAlreadyDischarged
+from core.domain.model.patient.events import (
+    PatientCreated,
+    PatientDischarged,
+    PatientReadmitted,
+)
 from core.domain.model.patient.patient_address import PatientAddress
 from core.domain.model.patient.patient_email import PatientEmail
 from core.domain.model.patient.patient_id import PatientId
@@ -52,6 +56,12 @@ class Patient:
             raise PatientAlreadyDischarged(id=str(self.id))
         self.status = PatientStatus.DISCHARGED
         self._events.append(PatientDischarged(patient_id=self.id))
+
+    def readmit(self) -> None:
+        if self.status is PatientStatus.ACTIVE:
+            raise PatientAlreadyActive(id=str(self.id))
+        self.status = PatientStatus.ACTIVE
+        self._events.append(PatientReadmitted(patient_id=self.id))
 
     def pull_events(self) -> list[DomainEvent]:
         events: list[DomainEvent] = self._events

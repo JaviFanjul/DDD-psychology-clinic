@@ -3,7 +3,7 @@ import pytest
 from core.domain.model.patient.errors import PatientNotNotified
 
 
-@pytest.mark.parametrize("notification", ["welcome", "farewell"])
+@pytest.mark.parametrize("notification", ["welcome", "welcome_back", "farewell"])
 async def test_given_a_failing_smtp_server_when_notifying_then_it_raises_patient_not_notified(
     notifier, patient, notification
 ):

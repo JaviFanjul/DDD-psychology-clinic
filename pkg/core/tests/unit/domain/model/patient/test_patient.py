@@ -1,6 +1,10 @@
 import pytest
-from core.domain.model.patient.errors import PatientAlreadyDischarged
-from core.domain.model.patient.events import PatientCreated, PatientDischarged
+from core.domain.model.patient.errors import PatientAlreadyActive, PatientAlreadyDischarged
+from core.domain.model.patient.events import (
+    PatientCreated,
+    PatientDischarged,
+    PatientReadmitted,
+)
 from core.domain.model.patient.patient import Patient
 from core.domain.model.patient.patient_status import PatientStatus
 
@@ -86,5 +90,37 @@ def test_given_a_discharged_patient_when_discharging_again_then_it_raises_and_re
 
     with pytest.raises(PatientAlreadyDischarged):
         created_patient.discharge()
+
+    assert created_patient.pull_events() == []
+
+
+def test_given_a_discharged_patient_when_readmitting_then_it_is_active(created_patient):
+    created_patient.discharge()
+
+    created_patient.readmit()
+
+    assert created_patient.status is PatientStatus.ACTIVE
+
+
+def test_given_a_discharged_patient_when_readmitting_then_it_records_patient_readmitted(
+    created_patient, patient_id
+):
+    created_patient.discharge()
+    created_patient.pull_events()
+
+    created_patient.readmit()
+
+    [event] = created_patient.pull_events()
+    assert isinstance(event, PatientReadmitted)
+    assert event.patient_id == patient_id
+
+
+def test_given_an_active_patient_when_readmitting_then_it_raises_and_records_nothing(
+    created_patient,
+):
+    created_patient.pull_events()
+
+    with pytest.raises(PatientAlreadyActive):
+        created_patient.readmit()
 
     assert created_patient.pull_events() == []

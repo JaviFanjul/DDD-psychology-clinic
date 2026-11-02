@@ -49,3 +49,8 @@ class PatientNotNotified(DomainError):
 class PatientAlreadyDischarged(DomainError):
     def __init__(self, id: str) -> None:
         super().__init__(f"Patient {id!r} is already discharged")
+
+
+class PatientAlreadyActive(DomainError):
+    def __init__(self, id: str) -> None:
+        super().__init__(f"Patient {id!r} is already active")

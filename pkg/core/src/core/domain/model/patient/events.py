@@ -12,3 +12,8 @@ class PatientCreated(DomainEvent):
 @dataclass(frozen=True)
 class PatientDischarged(DomainEvent):
     patient_id: PatientId
+
+
+@dataclass(frozen=True)
+class PatientReadmitted(DomainEvent):
+    patient_id: PatientId
