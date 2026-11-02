@@ -13,7 +13,7 @@ class StubPatientQueryRepository(PatientQueryRepository):
     def __init__(self, patients: dict[PatientId, PatientDto]) -> None:
         self._patients = patients
 
-    def find_by_id(self, id: PatientId) -> PatientDto | None:
+    async def find_by_id(self, id: PatientId) -> PatientDto | None:
         return self._patients.get(id)
 
 

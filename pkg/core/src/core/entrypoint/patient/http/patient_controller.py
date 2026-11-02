@@ -32,7 +32,7 @@ class PatientController:
         self._command_bus = command_bus
         self._query_bus = query_bus
 
-    def create(
+    async def create(
         self,
         email: str,
         first_name: str,
@@ -48,7 +48,7 @@ class PatientController:
         patient_address: PatientAddress = PatientAddress(
             street=street, postal_code=postal_code, city=city, province=province
         )
-        self._command_bus.handle(
+        await self._command_bus.handle(
             command=CreatePatientCommand(
                 id=patient_id,
                 email=patient_email,
@@ -58,6 +58,6 @@ class PatientController:
         )
         return str(patient_id)
 
-    def get(self, id: str) -> PatientDto:
+    async def get(self, id: str) -> PatientDto:
         patient_id: PatientId = PatientId.from_string(id=id)
-        return self._query_bus.handle(query=GetPatientQuery(id=patient_id))
+        return await self._query_bus.handle(query=GetPatientQuery(id=patient_id))

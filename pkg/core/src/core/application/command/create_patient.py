@@ -23,9 +23,9 @@ class CreatePatientCommandHandler(CommandHandler[CreatePatientCommand]):
         self._repository = repository
         self._event_bus = event_bus
 
-    def handle(self, command: CreatePatientCommand) -> None:
+    async def handle(self, command: CreatePatientCommand) -> None:
         patient: Patient = Patient.create(
             id=command.id, email=command.email, name=command.name, address=command.address
         )
-        self._repository.save(patient=patient)
-        self._event_bus.publish(events=patient.pull_events())
+        await self._repository.save(patient=patient)
+        await self._event_bus.publish(events=patient.pull_events())

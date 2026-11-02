@@ -12,5 +12,5 @@ class InMemoryCommandBus(CommandBus):
     ) -> None:
         self._handlers[command_type] = handler
 
-    def handle(self, command: Command) -> None:
-        self._handlers[type(command)].handle(command=command)
+    async def handle(self, command: Command) -> None:
+        await self._handlers[type(command)].handle(command=command)
