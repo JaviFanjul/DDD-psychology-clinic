@@ -1,24 +1,28 @@
 import pytest
 from core.application.command.create_patient import CreatePatientCommandHandler
+from core.application.command.discharge_patient import DischargePatientCommandHandler
 from core.domain.domain_event import DomainEvent
 from core.domain.event_bus import EventBus
 from core.domain.model.patient.patient import Patient
 from core.domain.model.patient.patient_address import PatientAddress
 from core.domain.model.patient.patient_command_repository import PatientCommandRepository
+from core.domain.model.patient.patient_email import PatientEmail
 from core.domain.model.patient.patient_id import PatientId
 from core.domain.model.patient.patient_name import PatientName
 from core.domain.model.patient.patient_phone import PatientPhone
+from core.domain.model.patient.patient_status import PatientStatus
 
 
 class SpyPatientCommandRepository(PatientCommandRepository):
-    def __init__(self) -> None:
+    def __init__(self, patients: list[Patient]) -> None:
+        self._patients = {patient.id: patient for patient in patients}
         self.saved: list[Patient] = []
 
     async def save(self, patient: Patient) -> None:
         self.saved.append(patient)
 
     async def find_by_id(self, id: PatientId) -> Patient | None:
-        return None
+        return self._patients.get(id)
 
 
 class SpyEventBus(EventBus):
@@ -46,9 +50,46 @@ def patient_address() -> PatientAddress:
     )
 
 
+def stored_patient(
+    status: PatientStatus,
+    name: PatientName,
+    phone: PatientPhone,
+    address: PatientAddress,
+) -> Patient:
+    return Patient(
+        id=PatientId.generate(),
+        email=PatientEmail(value="ana@gmail.com"),
+        name=name,
+        phone=phone,
+        address=address,
+        status=status,
+    )
+
+
 @pytest.fixture
-def repository() -> SpyPatientCommandRepository:
-    return SpyPatientCommandRepository()
+def active_patient(
+    patient_name: PatientName, patient_phone: PatientPhone, patient_address: PatientAddress
+) -> Patient:
+    return stored_patient(
+        status=PatientStatus.ACTIVE, name=patient_name, phone=patient_phone, address=patient_address
+    )
+
+
+@pytest.fixture
+def discharged_patient(
+    patient_name: PatientName, patient_phone: PatientPhone, patient_address: PatientAddress
+) -> Patient:
+    return stored_patient(
+        status=PatientStatus.DISCHARGED,
+        name=patient_name,
+        phone=patient_phone,
+        address=patient_address,
+    )
+
+
+@pytest.fixture
+def repository(active_patient: Patient, discharged_patient: Patient) -> SpyPatientCommandRepository:
+    return SpyPatientCommandRepository(patients=[active_patient, discharged_patient])
 
 
 @pytest.fixture
@@ -61,3 +102,10 @@ def handler(
     repository: SpyPatientCommandRepository, event_bus: SpyEventBus
 ) -> CreatePatientCommandHandler:
     return CreatePatientCommandHandler(repository=repository, event_bus=event_bus)
+
+
+@pytest.fixture
+def discharge_handler(
+    repository: SpyPatientCommandRepository, event_bus: SpyEventBus
+) -> DischargePatientCommandHandler:
+    return DischargePatientCommandHandler(repository=repository, event_bus=event_bus)

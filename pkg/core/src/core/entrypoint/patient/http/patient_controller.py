@@ -1,6 +1,7 @@
 from http import HTTPStatus
 
 from core.application.command.create_patient import CreatePatientCommand
+from core.application.command.discharge_patient import DischargePatientCommand
 from core.application.query.get_patient import GetPatientQuery
 from core.domain.command_bus import CommandBus
 from core.domain.domain_error import DomainError
@@ -10,6 +11,7 @@ from core.domain.model.patient.errors import (
     InvalidPatientId,
     InvalidPatientName,
     InvalidPatientPhone,
+    PatientAlreadyDischarged,
     PatientNotFound,
     PatientNotLoaded,
     PatientNotNotified,
@@ -30,6 +32,7 @@ STATUS_BY_ERROR: dict[type[DomainError], HTTPStatus] = {
     InvalidPatientPhone: HTTPStatus.UNPROCESSABLE_CONTENT,
     InvalidPatientAddress: HTTPStatus.UNPROCESSABLE_CONTENT,
     PatientNotFound: HTTPStatus.NOT_FOUND,
+    PatientAlreadyDischarged: HTTPStatus.CONFLICT,
     PatientNotSaved: HTTPStatus.INTERNAL_SERVER_ERROR,
     PatientNotLoaded: HTTPStatus.INTERNAL_SERVER_ERROR,
     PatientNotNotified: HTTPStatus.INTERNAL_SERVER_ERROR,
@@ -74,3 +77,7 @@ class PatientController:
     async def get(self, id: str) -> PatientDto:
         patient_id: PatientId = PatientId.from_string(id=id)
         return await self._query_bus.handle(query=GetPatientQuery(id=patient_id))
+
+    async def discharge(self, id: str) -> None:
+        patient_id: PatientId = PatientId.from_string(id=id)
+        await self._command_bus.handle(command=DischargePatientCommand(id=patient_id))

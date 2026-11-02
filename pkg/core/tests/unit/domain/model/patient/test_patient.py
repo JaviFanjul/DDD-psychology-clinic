@@ -1,5 +1,8 @@
-from core.domain.model.patient.events import PatientCreated
+import pytest
+from core.domain.model.patient.errors import PatientAlreadyDischarged
+from core.domain.model.patient.events import PatientCreated, PatientDischarged
 from core.domain.model.patient.patient import Patient
+from core.domain.model.patient.patient_status import PatientStatus
 
 
 def test_given_its_data_when_creating_then_the_patient_holds_it(
@@ -18,6 +21,7 @@ def test_given_its_data_when_creating_then_the_patient_holds_it(
     assert patient.name == patient_name
     assert patient.phone == patient_phone
     assert patient.address == patient_address
+    assert patient.status is PatientStatus.ACTIVE
 
 
 def test_given_a_created_patient_when_pulling_then_it_returns_patient_created(
@@ -48,8 +52,39 @@ def test_given_a_patient_built_with_the_constructor_when_pulling_then_it_returns
         name=patient_name,
         phone=patient_phone,
         address=patient_address,
+        status=PatientStatus.ACTIVE,
     )
 
     events = patient.pull_events()
 
     assert events == []
+
+
+def test_given_an_active_patient_when_discharging_then_it_is_discharged(created_patient):
+    created_patient.discharge()
+
+    assert created_patient.status is PatientStatus.DISCHARGED
+
+
+def test_given_an_active_patient_when_discharging_then_it_records_patient_discharged(
+    created_patient, patient_id
+):
+    created_patient.pull_events()
+
+    created_patient.discharge()
+
+    [event] = created_patient.pull_events()
+    assert isinstance(event, PatientDischarged)
+    assert event.patient_id == patient_id
+
+
+def test_given_a_discharged_patient_when_discharging_again_then_it_raises_and_records_nothing(
+    created_patient,
+):
+    created_patient.discharge()
+    created_patient.pull_events()
+
+    with pytest.raises(PatientAlreadyDischarged):
+        created_patient.discharge()
+
+    assert created_patient.pull_events() == []

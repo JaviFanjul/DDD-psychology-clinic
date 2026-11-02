@@ -8,3 +8,17 @@ async def test_given_a_patient_when_welcoming_them_then_a_welcome_email_reaches_
     assert [recipient["Address"] for recipient in message["To"]] == ["ana@gmail.com"]
     assert message["Subject"] == "Te damos la bienvenida a la clínica"
     assert message["Text"].strip() == "Hola Ana, tu alta como paciente se ha completado."
+
+
+async def test_given_a_patient_when_bidding_them_farewell_then_a_farewell_email_reaches_them(
+    notifier, mailbox, patient
+):
+    await notifier.farewell(patient=patient)
+
+    [message] = mailbox.messages()
+    assert message["From"]["Address"] == "clinica@example.com"
+    assert [recipient["Address"] for recipient in message["To"]] == ["ana@gmail.com"]
+    assert message["Subject"] == "Gracias por confiar en la clínica"
+    assert message["Text"].strip() == (
+        "Hola Ana, tu baja como paciente se ha completado. Te deseamos lo mejor."
+    )

@@ -1,4 +1,7 @@
 import pytest
+from core.application.event_handlers.bid_farewell_to_patient_on_patient_discharged import (
+    BidFarewellToPatientOnPatientDischarged,
+)
 from core.application.event_handlers.welcome_patient_on_patient_created import (
     WelcomePatientOnPatientCreated,
 )
@@ -23,9 +26,13 @@ class StubPatientQueryRepository(PatientQueryRepository):
 class SpyPatientNotifier(PatientNotifier):
     def __init__(self) -> None:
         self.welcomed: list[PatientDto] = []
+        self.farewelled: list[PatientDto] = []
 
     async def welcome(self, patient: PatientDto) -> None:
         self.welcomed.append(patient)
+
+    async def farewell(self, patient: PatientDto) -> None:
+        self.farewelled.append(patient)
 
 
 @pytest.fixture
@@ -46,6 +53,7 @@ def known_patient() -> PatientDto:
         postal_code="08001",
         city="Barcelona",
         province="Barcelona",
+        status="active",
     )
 
 
@@ -55,8 +63,19 @@ def notifier() -> SpyPatientNotifier:
 
 
 @pytest.fixture
+def repository(known_id: PatientId, known_patient: PatientDto) -> StubPatientQueryRepository:
+    return StubPatientQueryRepository(patients={known_id: known_patient})
+
+
+@pytest.fixture
 def handler(
-    known_id: PatientId, known_patient: PatientDto, notifier: SpyPatientNotifier
+    repository: StubPatientQueryRepository, notifier: SpyPatientNotifier
 ) -> WelcomePatientOnPatientCreated:
-    repository = StubPatientQueryRepository(patients={known_id: known_patient})
     return WelcomePatientOnPatientCreated(repository=repository, notifier=notifier)
+
+
+@pytest.fixture
+def farewell_handler(
+    repository: StubPatientQueryRepository, notifier: SpyPatientNotifier
+) -> BidFarewellToPatientOnPatientDischarged:
+    return BidFarewellToPatientOnPatientDischarged(repository=repository, notifier=notifier)

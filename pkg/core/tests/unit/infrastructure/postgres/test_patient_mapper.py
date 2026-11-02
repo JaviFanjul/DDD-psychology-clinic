@@ -1,4 +1,5 @@
 from core.domain.model.patient.patient_query_repository import PatientDto
+from core.domain.model.patient.patient_status import PatientStatus
 from core.infrastructure.postgres.patient_mapper import PatientMapper
 
 
@@ -16,6 +17,7 @@ def test_given_a_patient_when_mapping_to_model_then_it_flattens_its_value_object
         mapped.postal_code,
         mapped.city,
         mapped.province,
+        mapped.status,
     ) == (
         model.id,
         model.email,
@@ -27,6 +29,7 @@ def test_given_a_patient_when_mapping_to_model_then_it_flattens_its_value_object
         model.postal_code,
         model.city,
         model.province,
+        model.status,
     )
 
 
@@ -40,6 +43,7 @@ def test_given_a_model_when_mapping_to_entity_then_it_rebuilds_the_patient_witho
     assert mapped.name == patient.name
     assert mapped.phone == patient.phone
     assert mapped.address == patient.address
+    assert mapped.status is PatientStatus.ACTIVE
     assert mapped.pull_events() == []
 
 
@@ -57,4 +61,15 @@ def test_given_a_model_when_mapping_to_dto_then_it_copies_its_columns(model):
         postal_code="08001",
         city="Barcelona",
         province="Barcelona",
+        status="active",
     )
+
+
+def test_given_a_discharged_patient_when_mapping_to_model_and_back_then_it_keeps_its_status(
+    patient,
+):
+    patient.discharge()
+
+    mapped = PatientMapper.to_entity(model=PatientMapper.to_model(patient=patient))
+
+    assert mapped.status is PatientStatus.DISCHARGED

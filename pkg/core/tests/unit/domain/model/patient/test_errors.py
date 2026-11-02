@@ -1,6 +1,7 @@
 import pytest
 from core.domain.model.patient.errors import (
     InvalidPatientId,
+    PatientAlreadyDischarged,
     PatientNotFound,
     PatientNotLoaded,
     PatientNotNotified,
@@ -22,6 +23,14 @@ def test_given_an_id_when_creating_patient_not_found_then_its_message_names_it()
     error = PatientNotFound(id=id)
 
     assert str(error) == "Patient 'some-id' was not found"
+
+
+def test_given_an_id_when_creating_patient_already_discharged_then_its_message_names_it():
+    id = "some-id"
+
+    error = PatientAlreadyDischarged(id=id)
+
+    assert str(error) == "Patient 'some-id' is already discharged"
 
 
 @pytest.mark.parametrize(
