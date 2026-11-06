@@ -22,16 +22,16 @@ dev = [
 
 [tool.mypy]
 strict = true
-mypy_path = "pkg/core/src:ci/scripts/src"
-files = ["pkg/core/src", "ci/scripts/src"]
+mypy_path = "pkg/core/src:pkg/assistant/src:ci/scripts/src"
+files = ["pkg/core/src", "pkg/assistant/src", "ci/scripts/src"]
 namespace_packages = true
 explicit_package_bases = true
 
 [tool.importlinter]
-root_package = "core"
+root_packages = ["core", "assistant"]
 
 [[tool.importlinter.contracts]]
-name = "Hexagonal layers"
+name = "Core hexagonal layers"
 type = "layers"
 containers = ["core"]
 layers = [
@@ -39,6 +39,21 @@ layers = [
     "application",
     "domain",
 ]
+
+[[tool.importlinter.contracts]]
+name = "Assistant hexagonal layers"
+type = "layers"
+containers = ["assistant"]
+layers = [
+    "(entrypoint) | (infrastructure)",
+    "(application)",
+    "domain",
+]
+
+[[tool.importlinter.contracts]]
+name = "Independent bounded contexts"
+type = "independence"
+modules = ["core", "assistant"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
