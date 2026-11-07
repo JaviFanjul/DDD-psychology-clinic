@@ -1,5 +1,6 @@
 import pytest
 from core.application.command.create_patient import CreatePatientCommandHandler
+from core.application.command.create_psychologist import CreatePsychologistCommandHandler
 from core.application.command.discharge_patient import DischargePatientCommandHandler
 from core.application.command.readmit_patient import ReadmitPatientCommandHandler
 from core.domain.domain_event import DomainEvent
@@ -12,6 +13,10 @@ from core.domain.model.patient.patient_id import PatientId
 from core.domain.model.patient.patient_name import PatientName
 from core.domain.model.patient.patient_phone import PatientPhone
 from core.domain.model.patient.patient_status import PatientStatus
+from core.domain.model.psychologist.psychologist import Psychologist
+from core.domain.model.psychologist.psychologist_command_repository import (
+    PsychologistCommandRepository,
+)
 
 
 class SpyPatientCommandRepository(PatientCommandRepository):
@@ -24,6 +29,14 @@ class SpyPatientCommandRepository(PatientCommandRepository):
 
     async def find_by_id(self, id: PatientId) -> Patient | None:
         return self._patients.get(id)
+
+
+class SpyPsychologistCommandRepository(PsychologistCommandRepository):
+    def __init__(self) -> None:
+        self.saved: list[Psychologist] = []
+
+    async def save(self, psychologist: Psychologist) -> None:
+        self.saved.append(psychologist)
 
 
 class SpyEventBus(EventBus):
@@ -117,3 +130,15 @@ def readmit_handler(
     repository: SpyPatientCommandRepository, event_bus: SpyEventBus
 ) -> ReadmitPatientCommandHandler:
     return ReadmitPatientCommandHandler(repository=repository, event_bus=event_bus)
+
+
+@pytest.fixture
+def psychologist_repository() -> SpyPsychologistCommandRepository:
+    return SpyPsychologistCommandRepository()
+
+
+@pytest.fixture
+def create_psychologist_handler(
+    psychologist_repository: SpyPsychologistCommandRepository, event_bus: SpyEventBus
+) -> CreatePsychologistCommandHandler:
+    return CreatePsychologistCommandHandler(repository=psychologist_repository, event_bus=event_bus)

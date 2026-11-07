@@ -6,6 +6,7 @@ from core.domain.model.patient.events import (
     PatientDischarged,
     PatientReadmitted,
 )
+from core.domain.model.psychologist.events import PsychologistCreated
 from core.infrastructure.rabbitmq.rabbitmq_event_serializer import RabbitMqEventSerializer
 
 
@@ -36,6 +37,31 @@ def test_given_a_serialized_patient_event_when_deserializing_it_then_it_returns_
     patient_id, created_at, event_type
 ):
     event = event_type(patient_id=patient_id, created_at=created_at)
+    routing_key, body = RabbitMqEventSerializer.to_message(event=event)
+
+    deserialized = RabbitMqEventSerializer.from_message(routing_key=routing_key, body=body)
+
+    assert deserialized == event
+
+
+def test_given_psychologist_created_when_serializing_it_then_it_returns_its_routing_key_and_body(
+    psychologist_id, created_at
+):
+    event = PsychologistCreated(psychologist_id=psychologist_id, created_at=created_at)
+
+    routing_key, body = RabbitMqEventSerializer.to_message(event=event)
+
+    assert routing_key == "psychologist.created"
+    assert json.loads(body) == {
+        "psychologist_id": "0b1f2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d",
+        "created_at": "2026-11-02T10:30:00+00:00",
+    }
+
+
+def test_given_a_serialized_psychologist_created_when_deserializing_it_then_it_is_the_same_event(
+    psychologist_id, created_at
+):
+    event = PsychologistCreated(psychologist_id=psychologist_id, created_at=created_at)
     routing_key, body = RabbitMqEventSerializer.to_message(event=event)
 
     deserialized = RabbitMqEventSerializer.from_message(routing_key=routing_key, body=body)
