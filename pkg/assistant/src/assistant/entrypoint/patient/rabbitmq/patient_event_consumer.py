@@ -6,7 +6,7 @@ from assistant.application.command.deactivate_patient import DeactivatePatientCo
 from assistant.domain.command_bus import CommandBus
 from assistant.domain.model.patient.patient_id import PatientId
 
-PATIENTS_EXCHANGE = "patients"
+CORE_EXCHANGE = "core"
 PATIENT_EVENTS_QUEUE = "assistant.patients"
 COMMAND_BY_ROUTING_KEY: dict[str, type[ActivatePatientCommand | DeactivatePatientCommand]] = {
     "patient.created": ActivatePatientCommand,
