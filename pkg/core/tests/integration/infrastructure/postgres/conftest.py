@@ -9,6 +9,12 @@ from core.domain.model.patient.patient_id import PatientId
 from core.domain.model.patient.patient_name import PatientName
 from core.domain.model.patient.patient_phone import PatientPhone
 from core.domain.model.patient.patient_status import PatientStatus
+from core.domain.model.psychologist.psychologist import Psychologist
+from core.domain.model.psychologist.psychologist_email import PsychologistEmail
+from core.domain.model.psychologist.psychologist_id import PsychologistId
+from core.domain.model.psychologist.psychologist_license_number import PsychologistLicenseNumber
+from core.domain.model.psychologist.psychologist_name import PsychologistName
+from core.domain.model.psychologist.psychologist_phone import PsychologistPhone
 from core.infrastructure.postgres.base import Base
 from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
@@ -73,3 +79,19 @@ def patient() -> Patient:
 @pytest.fixture
 def unknown_id() -> PatientId:
     return PatientId.from_string(id="00000000-0000-4000-8000-000000000000")
+
+
+@pytest.fixture
+def psychologist() -> Psychologist:
+    return Psychologist(
+        id=PsychologistId.from_string(id="7c9e6679-7425-40de-944b-e07fc1f90ae7"),
+        email=PsychologistEmail(value="laura@clinica.es"),
+        name=PsychologistName(first_name="Laura", last_names="Martín Ruiz"),
+        phone=PsychologistPhone(prefix="+34", number="687654321"),
+        license_number=PsychologistLicenseNumber(value="M-12345"),
+    )
+
+
+@pytest.fixture
+def unknown_psychologist_id() -> PsychologistId:
+    return PsychologistId.from_string(id="00000000-0000-4000-8000-000000000000")
