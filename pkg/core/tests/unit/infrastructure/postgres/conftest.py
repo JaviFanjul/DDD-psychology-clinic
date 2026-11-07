@@ -1,6 +1,11 @@
+from datetime import UTC, datetime
 from uuid import UUID
 
 import pytest
+from core.domain.model.appointment.appointment import Appointment
+from core.domain.model.appointment.appointment_id import AppointmentId
+from core.domain.model.appointment.appointment_modality import AppointmentModality
+from core.domain.model.appointment.appointment_slot import AppointmentSlot
 from core.domain.model.patient.patient import Patient
 from core.domain.model.patient.patient_address import PatientAddress
 from core.domain.model.patient.patient_email import PatientEmail
@@ -13,11 +18,15 @@ from core.domain.model.psychologist.psychologist_id import PsychologistId
 from core.domain.model.psychologist.psychologist_license_number import PsychologistLicenseNumber
 from core.domain.model.psychologist.psychologist_name import PsychologistName
 from core.domain.model.psychologist.psychologist_phone import PsychologistPhone
+from core.infrastructure.postgres.appointment_model import AppointmentModel
 from core.infrastructure.postgres.patient_model import PatientModel
 from core.infrastructure.postgres.psychologist_model import PsychologistModel
 from sqlalchemy.exc import SQLAlchemyError
 
 ID = "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+PSYCHOLOGIST_ID = "0b1f2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d"
+APPOINTMENT_ID = "3f2504e0-4f89-41d3-9a0c-0305e82c3301"
+STARTS_AT = datetime(year=2026, month=11, day=10, hour=9, tzinfo=UTC)
 
 
 class FailingSession:
@@ -31,6 +40,12 @@ class FailingSession:
         self.rolled_back = True
 
     async def get(self, entity, ident):
+        raise SQLAlchemyError("database unavailable")
+
+    async def execute(self, statement):
+        raise SQLAlchemyError("database unavailable")
+
+    async def scalars(self, statement):
         raise SQLAlchemyError("database unavailable")
 
 
@@ -93,4 +108,28 @@ def psychologist_model() -> PsychologistModel:
         phone_prefix="+34",
         phone_number="687654321",
         license_number="M-12345",
+    )
+
+
+@pytest.fixture
+def appointment() -> Appointment:
+    return Appointment.schedule(
+        id=AppointmentId.from_string(id=APPOINTMENT_ID),
+        patient_id=PatientId.from_string(id=ID),
+        psychologist_id=PsychologistId.from_string(id=PSYCHOLOGIST_ID),
+        slot=AppointmentSlot(starts_at=STARTS_AT, duration_minutes=50),
+        modality=AppointmentModality.ONLINE,
+    )
+
+
+@pytest.fixture
+def appointment_model() -> AppointmentModel:
+    return AppointmentModel(
+        id=UUID(APPOINTMENT_ID),
+        patient_id=UUID(ID),
+        psychologist_id=UUID(PSYCHOLOGIST_ID),
+        starts_at=STARTS_AT,
+        duration_minutes=50,
+        modality="online",
+        status="pending",
     )

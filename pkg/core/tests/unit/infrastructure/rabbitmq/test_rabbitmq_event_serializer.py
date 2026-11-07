@@ -1,6 +1,13 @@
 import json
 
 import pytest
+from core.domain.model.appointment.events import (
+    AppointmentCancelled,
+    AppointmentCompleted,
+    AppointmentModalityChanged,
+    AppointmentRescheduled,
+    AppointmentScheduled,
+)
 from core.domain.model.patient.events import (
     PatientCreated,
     PatientDischarged,
@@ -62,6 +69,51 @@ def test_given_a_serialized_psychologist_created_when_deserializing_it_then_it_i
     psychologist_id, created_at
 ):
     event = PsychologistCreated(psychologist_id=psychologist_id, created_at=created_at)
+    routing_key, body = RabbitMqEventSerializer.to_message(event=event)
+
+    deserialized = RabbitMqEventSerializer.from_message(routing_key=routing_key, body=body)
+
+    assert deserialized == event
+
+
+@pytest.mark.parametrize(
+    ("event_type", "expected_routing_key"),
+    [
+        (AppointmentScheduled, "appointment.scheduled"),
+        (AppointmentRescheduled, "appointment.rescheduled"),
+        (AppointmentModalityChanged, "appointment.modality_changed"),
+        (AppointmentCancelled, "appointment.cancelled"),
+        (AppointmentCompleted, "appointment.completed"),
+    ],
+)
+def test_given_an_appointment_event_when_serializing_it_then_it_returns_its_routing_key_and_body(
+    appointment_id, created_at, event_type, expected_routing_key
+):
+    event = event_type(appointment_id=appointment_id, created_at=created_at)
+
+    routing_key, body = RabbitMqEventSerializer.to_message(event=event)
+
+    assert routing_key == expected_routing_key
+    assert json.loads(body) == {
+        "appointment_id": "3f2504e0-4f89-41d3-9a0c-0305e82c3301",
+        "created_at": "2026-11-02T10:30:00+00:00",
+    }
+
+
+@pytest.mark.parametrize(
+    "event_type",
+    [
+        AppointmentScheduled,
+        AppointmentRescheduled,
+        AppointmentModalityChanged,
+        AppointmentCancelled,
+        AppointmentCompleted,
+    ],
+)
+def test_given_a_serialized_appointment_event_when_deserializing_it_then_it_is_the_same_event(
+    appointment_id, created_at, event_type
+):
+    event = event_type(appointment_id=appointment_id, created_at=created_at)
     routing_key, body = RabbitMqEventSerializer.to_message(event=event)
 
     deserialized = RabbitMqEventSerializer.from_message(routing_key=routing_key, body=body)
