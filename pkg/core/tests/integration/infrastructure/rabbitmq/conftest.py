@@ -10,7 +10,7 @@ from core.domain.model.patient.events import (
     PatientReadmitted,
 )
 from core.domain.model.patient.patient_id import PatientId
-from core.infrastructure.rabbitmq.rabbitmq_event_bus import PATIENTS_EXCHANGE, RabbitMqEventBus
+from core.infrastructure.rabbitmq.rabbitmq_event_bus import CORE_EXCHANGE, RabbitMqEventBus
 from testcontainers.community.rabbitmq import RabbitMqContainer
 
 RABBITMQ_IMAGE = "rabbitmq:4.2.1-alpine"
@@ -33,7 +33,7 @@ async def channel(rabbitmq_url: str) -> AsyncIterator[AbstractChannel]:
 
 @pytest.fixture
 async def exchange(channel: AbstractChannel) -> AbstractExchange:
-    return await channel.declare_exchange(name=PATIENTS_EXCHANGE, type=ExchangeType.TOPIC, durable=True)
+    return await channel.declare_exchange(name=CORE_EXCHANGE, type=ExchangeType.TOPIC, durable=True)
 
 
 @pytest.fixture

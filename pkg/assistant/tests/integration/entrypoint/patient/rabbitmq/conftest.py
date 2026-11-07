@@ -12,7 +12,7 @@ from aio_pika.abc import (
 )
 from assistant.entrypoint.patient.rabbitmq.patient_event_consumer import (
     COMMAND_BY_ROUTING_KEY,
-    PATIENTS_EXCHANGE,
+    CORE_EXCHANGE,
     PatientEventConsumer,
 )
 from testcontainers.community.rabbitmq import RabbitMqContainer
@@ -56,7 +56,7 @@ async def channel(rabbitmq_url: str) -> AsyncIterator[AbstractChannel]:
 
 @pytest.fixture
 async def exchange(channel: AbstractChannel) -> AbstractExchange:
-    return await channel.declare_exchange(name=PATIENTS_EXCHANGE, type=ExchangeType.TOPIC, durable=True)
+    return await channel.declare_exchange(name=CORE_EXCHANGE, type=ExchangeType.TOPIC, durable=True)
 
 
 @pytest.fixture

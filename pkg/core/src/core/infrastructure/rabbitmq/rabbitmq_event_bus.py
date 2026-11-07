@@ -4,7 +4,7 @@ from core.domain.domain_event import DomainEvent
 from core.domain.event_bus import EventBus
 from core.infrastructure.rabbitmq.rabbitmq_event_serializer import RabbitMqEventSerializer
 
-PATIENTS_EXCHANGE = "patients"
+CORE_EXCHANGE = "core"
 
 
 class RabbitMqEventBus(EventBus):
