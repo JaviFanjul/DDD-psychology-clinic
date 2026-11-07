@@ -42,3 +42,20 @@ async def test_given_a_command_when_handling_then_patient_created_is_published(
     [event] = event_bus.published
     assert isinstance(event, PatientCreated)
     assert event.patient_id == id
+
+
+async def test_given_a_command_when_handling_then_it_commits_before_publishing(
+    handler, unit_of_work, patient_name, patient_phone, patient_address
+):
+    await handler.handle(
+        command=CreatePatientCommand(
+            id=PatientId.generate(),
+            email=PatientEmail(value="ana@gmail.com"),
+            name=patient_name,
+            phone=patient_phone,
+            address=patient_address,
+        )
+    )
+
+    assert unit_of_work.committed
+    assert unit_of_work.published_before_commit == []

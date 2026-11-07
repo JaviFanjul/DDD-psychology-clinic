@@ -18,6 +18,7 @@ from core.infrastructure.postgres.postgres_appointment_query_repository import (
 async def save(sessions, appointment):
     async with sessions() as session:
         await PostgresAppointmentCommandRepository(session=session).save(appointment=appointment)
+        await session.commit()
 
 
 def another_appointment(appointment, status, starts_at_hour):

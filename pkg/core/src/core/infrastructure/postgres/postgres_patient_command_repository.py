@@ -15,9 +15,8 @@ class PostgresPatientCommandRepository(PatientCommandRepository):
     async def save(self, patient: Patient) -> None:
         try:
             await self._session.merge(PatientMapper.to_model(patient=patient))
-            await self._session.commit()
+            await self._session.flush()
         except SQLAlchemyError as error:
-            await self._session.rollback()
             raise PatientNotSaved(id=str(patient.id)) from error
 
     async def find_by_id(self, id: PatientId) -> Patient | None:

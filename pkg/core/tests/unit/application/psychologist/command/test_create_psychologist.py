@@ -40,3 +40,12 @@ async def test_given_a_command_when_handling_then_psychologist_created_is_publis
     [event] = event_bus.published
     assert isinstance(event, PsychologistCreated)
     assert event.psychologist_id == command.id
+
+
+async def test_given_a_command_when_handling_then_it_commits_before_publishing(
+    create_psychologist_handler, unit_of_work, command
+):
+    await create_psychologist_handler.handle(command=command)
+
+    assert unit_of_work.committed
+    assert unit_of_work.published_before_commit == []

@@ -47,6 +47,7 @@ async def test_given_a_busy_agenda_when_handling_then_it_raises_and_saves_and_pu
     reschedule_appointment_handler_with_busy_agenda,
     appointment_repository,
     event_bus,
+    unit_of_work,
     pending_appointment,
     other_slot,
 ):
@@ -57,10 +58,11 @@ async def test_given_a_busy_agenda_when_handling_then_it_raises_and_saves_and_pu
 
     assert appointment_repository.saved == []
     assert event_bus.published == []
+    assert not unit_of_work.committed
 
 
 async def test_given_an_unknown_id_when_handling_then_it_raises_and_saves_and_publishes_nothing(
-    reschedule_appointment_handler, appointment_repository, event_bus, other_slot
+    reschedule_appointment_handler, appointment_repository, event_bus, unit_of_work, other_slot
 ):
     with pytest.raises(AppointmentNotFound):
         await reschedule_appointment_handler.handle(
@@ -69,12 +71,14 @@ async def test_given_an_unknown_id_when_handling_then_it_raises_and_saves_and_pu
 
     assert appointment_repository.saved == []
     assert event_bus.published == []
+    assert not unit_of_work.committed
 
 
 async def test_given_a_cancelled_appointment_when_handling_then_it_raises_before_checking_agenda(
     reschedule_appointment_handler,
     appointment_repository,
     event_bus,
+    unit_of_work,
     free_agenda,
     cancelled_appointment,
     other_slot,
@@ -87,3 +91,15 @@ async def test_given_a_cancelled_appointment_when_handling_then_it_raises_before
     assert free_agenda.slot_queries == []
     assert appointment_repository.saved == []
     assert event_bus.published == []
+    assert not unit_of_work.committed
+
+
+async def test_given_a_pending_appointment_and_a_free_agenda_when_handling_then_it_commits_before_publishing(
+    reschedule_appointment_handler, unit_of_work, pending_appointment, other_slot
+):
+    await reschedule_appointment_handler.handle(
+        command=RescheduleAppointmentCommand(id=pending_appointment.id, slot=other_slot)
+    )
+
+    assert unit_of_work.committed
+    assert unit_of_work.published_before_commit == []

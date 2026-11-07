@@ -37,6 +37,7 @@ from core.domain.model.psychologist.psychologist_query_repository import (
     PsychologistDto,
     PsychologistQueryRepository,
 )
+from core.domain.unit_of_work import UnitOfWork
 
 
 class SpyEventBus(EventBus):
@@ -50,6 +51,24 @@ class SpyEventBus(EventBus):
 @pytest.fixture
 def event_bus() -> SpyEventBus:
     return SpyEventBus()
+
+
+class SpyUnitOfWork(UnitOfWork):
+    def __init__(self, event_bus: SpyEventBus) -> None:
+        self._event_bus = event_bus
+        self.committed = False
+        self.published_before_commit: list[DomainEvent] = []
+
+    async def commit(self) -> None:
+        self.committed = True
+        self.published_before_commit = list(self._event_bus.published)
+
+    async def rollback(self) -> None: ...
+
+
+@pytest.fixture
+def unit_of_work(event_bus: SpyEventBus) -> SpyUnitOfWork:
+    return SpyUnitOfWork(event_bus=event_bus)
 
 
 class SpyAppointmentCommandRepository(AppointmentCommandRepository):
@@ -206,6 +225,7 @@ def schedule_handler(
     agenda: StubAppointmentQueryRepository,
     patient_query_repository: StubPatientQueryRepository,
     psychologist_query_repository: StubPsychologistQueryRepository,
+    unit_of_work: SpyUnitOfWork,
     event_bus: SpyEventBus,
 ) -> ScheduleAppointmentCommandHandler:
     return ScheduleAppointmentCommandHandler(
@@ -213,6 +233,7 @@ def schedule_handler(
         availability=PsychologistAvailability(repository=agenda),
         patients=patient_query_repository,
         psychologists=psychologist_query_repository,
+        unit_of_work=unit_of_work,
         event_bus=event_bus,
     )
 
@@ -223,6 +244,7 @@ def schedule_appointment_handler(
     free_agenda: StubAppointmentQueryRepository,
     patient_query_repository: StubPatientQueryRepository,
     psychologist_query_repository: StubPsychologistQueryRepository,
+    unit_of_work: SpyUnitOfWork,
     event_bus: SpyEventBus,
 ) -> ScheduleAppointmentCommandHandler:
     return schedule_handler(
@@ -230,6 +252,7 @@ def schedule_appointment_handler(
         agenda=free_agenda,
         patient_query_repository=patient_query_repository,
         psychologist_query_repository=psychologist_query_repository,
+        unit_of_work=unit_of_work,
         event_bus=event_bus,
     )
 
@@ -240,6 +263,7 @@ def schedule_appointment_handler_with_busy_agenda(
     busy_agenda: StubAppointmentQueryRepository,
     patient_query_repository: StubPatientQueryRepository,
     psychologist_query_repository: StubPsychologistQueryRepository,
+    unit_of_work: SpyUnitOfWork,
     event_bus: SpyEventBus,
 ) -> ScheduleAppointmentCommandHandler:
     return schedule_handler(
@@ -247,6 +271,7 @@ def schedule_appointment_handler_with_busy_agenda(
         agenda=busy_agenda,
         patient_query_repository=patient_query_repository,
         psychologist_query_repository=psychologist_query_repository,
+        unit_of_work=unit_of_work,
         event_bus=event_bus,
     )
 
@@ -255,11 +280,13 @@ def schedule_appointment_handler_with_busy_agenda(
 def reschedule_appointment_handler(
     appointment_repository: SpyAppointmentCommandRepository,
     free_agenda: StubAppointmentQueryRepository,
+    unit_of_work: SpyUnitOfWork,
     event_bus: SpyEventBus,
 ) -> RescheduleAppointmentCommandHandler:
     return RescheduleAppointmentCommandHandler(
         repository=appointment_repository,
         availability=PsychologistAvailability(repository=free_agenda),
+        unit_of_work=unit_of_work,
         event_bus=event_bus,
     )
 
@@ -268,31 +295,39 @@ def reschedule_appointment_handler(
 def reschedule_appointment_handler_with_busy_agenda(
     appointment_repository: SpyAppointmentCommandRepository,
     busy_agenda: StubAppointmentQueryRepository,
+    unit_of_work: SpyUnitOfWork,
     event_bus: SpyEventBus,
 ) -> RescheduleAppointmentCommandHandler:
     return RescheduleAppointmentCommandHandler(
         repository=appointment_repository,
         availability=PsychologistAvailability(repository=busy_agenda),
+        unit_of_work=unit_of_work,
         event_bus=event_bus,
     )
 
 
 @pytest.fixture
 def change_appointment_modality_handler(
-    appointment_repository: SpyAppointmentCommandRepository, event_bus: SpyEventBus
+    appointment_repository: SpyAppointmentCommandRepository, unit_of_work: SpyUnitOfWork, event_bus: SpyEventBus
 ) -> ChangeAppointmentModalityCommandHandler:
-    return ChangeAppointmentModalityCommandHandler(repository=appointment_repository, event_bus=event_bus)
+    return ChangeAppointmentModalityCommandHandler(
+        repository=appointment_repository, unit_of_work=unit_of_work, event_bus=event_bus
+    )
 
 
 @pytest.fixture
 def cancel_appointment_handler(
-    appointment_repository: SpyAppointmentCommandRepository, event_bus: SpyEventBus
+    appointment_repository: SpyAppointmentCommandRepository, unit_of_work: SpyUnitOfWork, event_bus: SpyEventBus
 ) -> CancelAppointmentCommandHandler:
-    return CancelAppointmentCommandHandler(repository=appointment_repository, event_bus=event_bus)
+    return CancelAppointmentCommandHandler(
+        repository=appointment_repository, unit_of_work=unit_of_work, event_bus=event_bus
+    )
 
 
 @pytest.fixture
 def complete_appointment_handler(
-    appointment_repository: SpyAppointmentCommandRepository, event_bus: SpyEventBus
+    appointment_repository: SpyAppointmentCommandRepository, unit_of_work: SpyUnitOfWork, event_bus: SpyEventBus
 ) -> CompleteAppointmentCommandHandler:
-    return CompleteAppointmentCommandHandler(repository=appointment_repository, event_bus=event_bus)
+    return CompleteAppointmentCommandHandler(
+        repository=appointment_repository, unit_of_work=unit_of_work, event_bus=event_bus
+    )

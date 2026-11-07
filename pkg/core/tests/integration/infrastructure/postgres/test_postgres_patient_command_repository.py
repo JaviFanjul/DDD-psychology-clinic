@@ -7,6 +7,7 @@ from core.infrastructure.postgres.postgres_patient_command_repository import (
 async def save(sessions, patient):
     async with sessions() as session:
         await PostgresPatientCommandRepository(session=session).save(patient=patient)
+        await session.commit()
 
 
 async def find_by_id(sessions, id):

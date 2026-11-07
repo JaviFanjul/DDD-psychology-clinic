@@ -10,16 +10,13 @@ from core.infrastructure.postgres.postgres_appointment_command_repository import
 from sqlalchemy.exc import SQLAlchemyError
 
 
-async def test_given_a_failing_database_when_saving_then_it_rolls_back_and_raises_not_saved(
-    failing_session, appointment
-):
+async def test_given_a_failing_database_when_saving_then_it_raises_not_saved(failing_session, appointment):
     repository = PostgresAppointmentCommandRepository(session=failing_session)
 
     with pytest.raises(AppointmentNotSaved) as raised:
         await repository.save(appointment=appointment)
 
     assert isinstance(raised.value.__cause__, SQLAlchemyError)
-    assert failing_session.rolled_back
 
 
 async def test_given_a_failing_database_when_finding_then_it_raises_appointment_not_loaded(

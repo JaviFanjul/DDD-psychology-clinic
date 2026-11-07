@@ -15,6 +15,7 @@ async def find_by_id(sessions, id):
 async def test_given_a_saved_patient_when_finding_it_then_it_returns_its_dto(sessions, patient):
     async with sessions() as session:
         await PostgresPatientCommandRepository(session=session).save(patient=patient)
+        await session.commit()
 
     found = await find_by_id(sessions=sessions, id=patient.id)
 
