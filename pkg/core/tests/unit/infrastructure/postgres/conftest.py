@@ -36,6 +36,9 @@ class FailingSession:
     async def merge(self, instance):
         raise SQLAlchemyError("database unavailable")
 
+    async def commit(self):
+        raise SQLAlchemyError("database unavailable")
+
     async def rollback(self):
         self.rolled_back = True
 

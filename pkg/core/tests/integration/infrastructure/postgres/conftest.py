@@ -116,6 +116,7 @@ async def attendees(
     async with sessions() as session:
         await PostgresPatientCommandRepository(session=session).save(patient=patient)
         await PostgresPsychologistCommandRepository(session=session).save(psychologist=psychologist)
+        await session.commit()
     return patient, psychologist
 
 

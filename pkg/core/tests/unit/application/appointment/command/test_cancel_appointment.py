@@ -34,6 +34,7 @@ async def test_given_an_unchangeable_appointment_when_handling_then_it_raises_an
     cancel_appointment_handler,
     appointment_repository,
     event_bus,
+    unit_of_work,
     cancelled_appointment,
     appointment,
     expected_error,
@@ -45,3 +46,13 @@ async def test_given_an_unchangeable_appointment_when_handling_then_it_raises_an
 
     assert appointment_repository.saved == []
     assert event_bus.published == []
+    assert not unit_of_work.committed
+
+
+async def test_given_a_pending_appointment_when_handling_then_it_commits_before_publishing(
+    cancel_appointment_handler, unit_of_work, pending_appointment
+):
+    await cancel_appointment_handler.handle(command=CancelAppointmentCommand(id=pending_appointment.id))
+
+    assert unit_of_work.committed
+    assert unit_of_work.published_before_commit == []

@@ -12,6 +12,7 @@ from core.domain.model.patient.patient_id import PatientId
 from core.domain.model.patient.patient_name import PatientName
 from core.domain.model.patient.patient_phone import PatientPhone
 from core.domain.model.patient.patient_status import PatientStatus
+from core.domain.unit_of_work import UnitOfWork
 
 
 class SpyPatientCommandRepository(PatientCommandRepository):
@@ -92,18 +93,40 @@ def event_bus() -> SpyEventBus:
     return SpyEventBus()
 
 
+class SpyUnitOfWork(UnitOfWork):
+    def __init__(self, event_bus: SpyEventBus) -> None:
+        self._event_bus = event_bus
+        self.committed = False
+        self.published_before_commit: list[DomainEvent] = []
+
+    async def commit(self) -> None:
+        self.committed = True
+        self.published_before_commit = list(self._event_bus.published)
+
+    async def rollback(self) -> None: ...
+
+
 @pytest.fixture
-def handler(repository: SpyPatientCommandRepository, event_bus: SpyEventBus) -> CreatePatientCommandHandler:
-    return CreatePatientCommandHandler(repository=repository, event_bus=event_bus)
+def unit_of_work(event_bus: SpyEventBus) -> SpyUnitOfWork:
+    return SpyUnitOfWork(event_bus=event_bus)
+
+
+@pytest.fixture
+def handler(
+    repository: SpyPatientCommandRepository, unit_of_work: SpyUnitOfWork, event_bus: SpyEventBus
+) -> CreatePatientCommandHandler:
+    return CreatePatientCommandHandler(repository=repository, unit_of_work=unit_of_work, event_bus=event_bus)
 
 
 @pytest.fixture
 def discharge_handler(
-    repository: SpyPatientCommandRepository, event_bus: SpyEventBus
+    repository: SpyPatientCommandRepository, unit_of_work: SpyUnitOfWork, event_bus: SpyEventBus
 ) -> DischargePatientCommandHandler:
-    return DischargePatientCommandHandler(repository=repository, event_bus=event_bus)
+    return DischargePatientCommandHandler(repository=repository, unit_of_work=unit_of_work, event_bus=event_bus)
 
 
 @pytest.fixture
-def readmit_handler(repository: SpyPatientCommandRepository, event_bus: SpyEventBus) -> ReadmitPatientCommandHandler:
-    return ReadmitPatientCommandHandler(repository=repository, event_bus=event_bus)
+def readmit_handler(
+    repository: SpyPatientCommandRepository, unit_of_work: SpyUnitOfWork, event_bus: SpyEventBus
+) -> ReadmitPatientCommandHandler:
+    return ReadmitPatientCommandHandler(repository=repository, unit_of_work=unit_of_work, event_bus=event_bus)

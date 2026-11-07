@@ -15,7 +15,6 @@ class PostgresPsychologistCommandRepository(PsychologistCommandRepository):
     async def save(self, psychologist: Psychologist) -> None:
         try:
             await self._session.merge(PsychologistMapper.to_model(psychologist=psychologist))
-            await self._session.commit()
+            await self._session.flush()
         except SQLAlchemyError as error:
-            await self._session.rollback()
             raise PsychologistNotSaved(id=str(psychologist.id)) from error

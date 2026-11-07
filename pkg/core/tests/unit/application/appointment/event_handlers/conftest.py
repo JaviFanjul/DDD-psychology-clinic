@@ -18,6 +18,7 @@ from core.domain.model.appointment.appointment_query_repository import (
 )
 from core.domain.model.appointment.appointment_slot import AppointmentSlot
 from core.domain.model.appointment.appointment_status import AppointmentStatus
+from core.domain.model.appointment.errors import AppointmentNotSaved
 from core.domain.model.patient.patient_id import PatientId
 from core.domain.model.patient.patient_notifier import PatientNotifier
 from core.domain.model.patient.patient_query_repository import (
@@ -30,6 +31,7 @@ from core.domain.model.psychologist.psychologist_query_repository import (
     PsychologistDto,
     PsychologistQueryRepository,
 )
+from core.domain.unit_of_work import UnitOfWork
 
 KNOWN_ID = "7c9e6679-7425-40de-944b-e07fc1f90ae7"
 
@@ -131,6 +133,13 @@ class SpyAppointmentCommandRepository(AppointmentCommandRepository):
             for appointment in self._appointments
             if appointment.patient_id == patient_id and appointment.status is AppointmentStatus.PENDING
         ]
+
+
+class FailingOnSecondSaveAppointmentCommandRepository(SpyAppointmentCommandRepository):
+    async def save(self, appointment: Appointment) -> None:
+        if self.saved:
+            raise AppointmentNotSaved(id=str(appointment.id))
+        await super().save(appointment=appointment)
 
 
 class SpyEventBus(EventBus):
@@ -247,6 +256,24 @@ def event_bus() -> SpyEventBus:
     return SpyEventBus()
 
 
+class SpyUnitOfWork(UnitOfWork):
+    def __init__(self, event_bus: SpyEventBus) -> None:
+        self._event_bus = event_bus
+        self.commits = 0
+        self.published_before_commit: list[DomainEvent] = []
+
+    async def commit(self) -> None:
+        self.commits += 1
+        self.published_before_commit = list(self._event_bus.published)
+
+    async def rollback(self) -> None: ...
+
+
+@pytest.fixture
+def unit_of_work(event_bus: SpyEventBus) -> SpyUnitOfWork:
+    return SpyUnitOfWork(event_bus=event_bus)
+
+
 def stored_appointment(patient_id: PatientId, status: AppointmentStatus) -> Appointment:
     return Appointment(
         id=AppointmentId.generate(),
@@ -284,6 +311,21 @@ def appointment_repository(
 
 @pytest.fixture
 def cancel_pending_appointments_handler(
-    appointment_repository: SpyAppointmentCommandRepository, event_bus: SpyEventBus
+    appointment_repository: SpyAppointmentCommandRepository, unit_of_work: SpyUnitOfWork, event_bus: SpyEventBus
 ) -> CancelPendingAppointmentsOnPatientDischarged:
-    return CancelPendingAppointmentsOnPatientDischarged(repository=appointment_repository, event_bus=event_bus)
+    return CancelPendingAppointmentsOnPatientDischarged(
+        repository=appointment_repository, unit_of_work=unit_of_work, event_bus=event_bus
+    )
+
+
+@pytest.fixture
+def cancel_pending_appointments_handler_failing_on_second_save(
+    pending_appointments: list[Appointment],
+    unit_of_work: SpyUnitOfWork,
+    event_bus: SpyEventBus,
+) -> CancelPendingAppointmentsOnPatientDischarged:
+    return CancelPendingAppointmentsOnPatientDischarged(
+        repository=FailingOnSecondSaveAppointmentCommandRepository(appointments=pending_appointments),
+        unit_of_work=unit_of_work,
+        event_bus=event_bus,
+    )

@@ -63,13 +63,14 @@ async def test_given_a_command_when_handling_then_it_checks_the_psychologist_age
 
 
 async def test_given_a_busy_agenda_when_handling_then_it_raises_and_saves_and_publishes_nothing(
-    schedule_appointment_handler_with_busy_agenda, appointment_repository, event_bus, command
+    schedule_appointment_handler_with_busy_agenda, appointment_repository, event_bus, unit_of_work, command
 ):
     with pytest.raises(AppointmentOverlaps):
         await schedule_appointment_handler_with_busy_agenda.handle(command=command)
 
     assert appointment_repository.saved == []
     assert event_bus.published == []
+    assert not unit_of_work.committed
 
 
 @pytest.mark.parametrize(
@@ -84,6 +85,7 @@ async def test_given_an_ineligible_attendee_when_handling_then_it_raises_and_sav
     schedule_appointment_handler,
     appointment_repository,
     event_bus,
+    unit_of_work,
     active_patient_dto,
     discharged_patient_dto,
     psychologist_dto,
@@ -113,3 +115,13 @@ async def test_given_an_ineligible_attendee_when_handling_then_it_raises_and_sav
 
     assert appointment_repository.saved == []
     assert event_bus.published == []
+    assert not unit_of_work.committed
+
+
+async def test_given_an_active_patient_and_a_free_agenda_when_handling_then_it_commits_before_publishing(
+    schedule_appointment_handler, unit_of_work, command
+):
+    await schedule_appointment_handler.handle(command=command)
+
+    assert unit_of_work.committed
+    assert unit_of_work.published_before_commit == []

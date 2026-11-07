@@ -27,20 +27,31 @@ async def test_given_an_active_patient_when_handling_then_patient_discharged_is_
 
 
 async def test_given_an_unknown_id_when_handling_then_it_raises_and_saves_and_publishes_nothing(
-    discharge_handler, repository, event_bus
+    discharge_handler, repository, event_bus, unit_of_work
 ):
     with pytest.raises(PatientNotFound):
         await discharge_handler.handle(command=DischargePatientCommand(id=PatientId.generate()))
 
     assert repository.saved == []
     assert event_bus.published == []
+    assert not unit_of_work.committed
 
 
 async def test_given_a_discharged_patient_when_handling_then_it_raises_and_saves_nothing(
-    discharge_handler, repository, event_bus, discharged_patient
+    discharge_handler, repository, event_bus, unit_of_work, discharged_patient
 ):
     with pytest.raises(PatientAlreadyDischarged):
         await discharge_handler.handle(command=DischargePatientCommand(id=discharged_patient.id))
 
     assert repository.saved == []
     assert event_bus.published == []
+    assert not unit_of_work.committed
+
+
+async def test_given_an_active_patient_when_handling_then_it_commits_before_publishing(
+    discharge_handler, unit_of_work, active_patient
+):
+    await discharge_handler.handle(command=DischargePatientCommand(id=active_patient.id))
+
+    assert unit_of_work.committed
+    assert unit_of_work.published_before_commit == []
