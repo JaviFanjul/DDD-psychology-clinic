@@ -93,8 +93,7 @@ class StubPatientQueryRepository(PatientQueryRepository):
 class StubPsychologistQueryRepository(PsychologistQueryRepository):
     def __init__(self, psychologists: list[PsychologistDto]) -> None:
         self._psychologists = {
-            PsychologistId.from_string(id=psychologist.id): psychologist
-            for psychologist in psychologists
+            PsychologistId.from_string(id=psychologist.id): psychologist for psychologist in psychologists
         }
 
     async def find_by_id(self, id: PsychologistId) -> PsychologistDto | None:
@@ -142,16 +141,12 @@ def psychologist_dto() -> PsychologistDto:
 
 @pytest.fixture
 def slot() -> AppointmentSlot:
-    return AppointmentSlot(
-        starts_at=datetime(year=2026, month=11, day=10, hour=9, tzinfo=UTC), duration_minutes=50
-    )
+    return AppointmentSlot(starts_at=datetime(year=2026, month=11, day=10, hour=9, tzinfo=UTC), duration_minutes=50)
 
 
 @pytest.fixture
 def other_slot() -> AppointmentSlot:
-    return AppointmentSlot(
-        starts_at=datetime(year=2026, month=11, day=12, hour=16, tzinfo=UTC), duration_minutes=60
-    )
+    return AppointmentSlot(starts_at=datetime(year=2026, month=11, day=12, hour=16, tzinfo=UTC), duration_minutes=60)
 
 
 def stored_appointment(status: AppointmentStatus, slot: AppointmentSlot) -> Appointment:
@@ -179,9 +174,7 @@ def cancelled_appointment(slot: AppointmentSlot) -> Appointment:
 def appointment_repository(
     pending_appointment: Appointment, cancelled_appointment: Appointment
 ) -> SpyAppointmentCommandRepository:
-    return SpyAppointmentCommandRepository(
-        appointments=[pending_appointment, cancelled_appointment]
-    )
+    return SpyAppointmentCommandRepository(appointments=[pending_appointment, cancelled_appointment])
 
 
 @pytest.fixture
@@ -190,9 +183,7 @@ def free_agenda() -> StubAppointmentQueryRepository:
 
 
 @pytest.fixture
-def busy_agenda(
-    slot: AppointmentSlot, other_slot: AppointmentSlot
-) -> StubAppointmentQueryRepository:
+def busy_agenda(slot: AppointmentSlot, other_slot: AppointmentSlot) -> StubAppointmentQueryRepository:
     return StubAppointmentQueryRepository(pending_slots=[slot, other_slot])
 
 
@@ -290,9 +281,7 @@ def reschedule_appointment_handler_with_busy_agenda(
 def change_appointment_modality_handler(
     appointment_repository: SpyAppointmentCommandRepository, event_bus: SpyEventBus
 ) -> ChangeAppointmentModalityCommandHandler:
-    return ChangeAppointmentModalityCommandHandler(
-        repository=appointment_repository, event_bus=event_bus
-    )
+    return ChangeAppointmentModalityCommandHandler(repository=appointment_repository, event_bus=event_bus)
 
 
 @pytest.fixture

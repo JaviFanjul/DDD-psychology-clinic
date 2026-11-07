@@ -12,9 +12,7 @@ from core.domain.model.patient.patient_name import PatientName
         ("Ana", "   "),
     ],
 )
-def test_given_a_blank_part_when_creating_then_it_raises_invalid_patient_name(
-    first_name, last_names
-):
+def test_given_a_blank_part_when_creating_then_it_raises_invalid_patient_name(first_name, last_names):
     with pytest.raises(InvalidPatientName):
         PatientName(first_name=first_name, last_names=last_names)
 

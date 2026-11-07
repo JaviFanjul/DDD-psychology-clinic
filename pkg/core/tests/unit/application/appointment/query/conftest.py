@@ -46,9 +46,7 @@ def known_appointment(known_id: str) -> AppointmentDto:
 
 
 @pytest.fixture
-def appointment_handler(
-    known_id: str, known_appointment: AppointmentDto
-) -> GetAppointmentQueryHandler:
+def appointment_handler(known_id: str, known_appointment: AppointmentDto) -> GetAppointmentQueryHandler:
     repository = StubAppointmentQueryRepository(
         appointments={AppointmentId.from_string(id=known_id): known_appointment}
     )

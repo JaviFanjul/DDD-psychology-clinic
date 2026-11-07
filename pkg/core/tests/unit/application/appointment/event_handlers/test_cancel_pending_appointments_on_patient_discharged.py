@@ -10,10 +10,7 @@ async def test_given_pending_appointments_when_the_patient_is_discharged_then_th
     await cancel_pending_appointments_handler.handle(event=PatientDischarged(patient_id=known_id))
 
     assert appointment_repository.saved == pending_appointments
-    assert all(
-        appointment.status is AppointmentStatus.CANCELLED
-        for appointment in appointment_repository.saved
-    )
+    assert all(appointment.status is AppointmentStatus.CANCELLED for appointment in appointment_repository.saved)
 
 
 async def test_given_pending_appointments_when_the_patient_is_discharged_then_it_publishes_them(
@@ -30,9 +27,7 @@ async def test_given_pending_appointments_when_the_patient_is_discharged_then_it
 async def test_given_no_pending_appointments_when_the_patient_is_discharged_then_nothing_changes(
     cancel_pending_appointments_handler, appointment_repository, event_bus
 ):
-    await cancel_pending_appointments_handler.handle(
-        event=PatientDischarged(patient_id=PatientId.generate())
-    )
+    await cancel_pending_appointments_handler.handle(event=PatientDischarged(patient_id=PatientId.generate()))
 
     assert appointment_repository.saved == []
     assert event_bus.published == []

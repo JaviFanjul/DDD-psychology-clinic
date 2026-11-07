@@ -1,9 +1,7 @@
 from assistant.infrastructure.postgres.patient_mapper import PatientMapper
 
 
-def test_given_a_patient_when_mapping_to_model_then_it_copies_its_id_and_status(
-    patient, patient_model
-):
+def test_given_a_patient_when_mapping_to_model_then_it_copies_its_id_and_status(patient, patient_model):
     mapped = PatientMapper.to_model(patient=patient)
 
     assert (mapped.id, mapped.active) == (patient_model.id, patient_model.active)

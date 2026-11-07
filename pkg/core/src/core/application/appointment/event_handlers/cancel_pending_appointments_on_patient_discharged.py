@@ -12,9 +12,7 @@ class CancelPendingAppointmentsOnPatientDischarged(EventHandler[PatientDischarge
         self._event_bus = event_bus
 
     async def handle(self, event: PatientDischarged) -> None:
-        appointments: list[Appointment] = await self._repository.find_pending_by_patient(
-            patient_id=event.patient_id
-        )
+        appointments: list[Appointment] = await self._repository.find_pending_by_patient(patient_id=event.patient_id)
         for appointment in appointments:
             appointment.cancel()
             await self._repository.save(appointment=appointment)

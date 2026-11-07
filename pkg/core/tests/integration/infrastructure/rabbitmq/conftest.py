@@ -33,9 +33,7 @@ async def channel(rabbitmq_url: str) -> AsyncIterator[AbstractChannel]:
 
 @pytest.fixture
 async def exchange(channel: AbstractChannel) -> AbstractExchange:
-    return await channel.declare_exchange(
-        name=PATIENTS_EXCHANGE, type=ExchangeType.TOPIC, durable=True
-    )
+    return await channel.declare_exchange(name=PATIENTS_EXCHANGE, type=ExchangeType.TOPIC, durable=True)
 
 
 @pytest.fixture

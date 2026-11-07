@@ -49,9 +49,7 @@ async def test_given_a_known_appointment_when_handling_then_its_psychologist_is_
     event_type,
     notification,
 ):
-    handler = handler_type(
-        appointments=appointments, psychologists=psychologists, notifier=psychologist_notifier
-    )
+    handler = handler_type(appointments=appointments, psychologists=psychologists, notifier=psychologist_notifier)
 
     await handler.handle(event=event_type(appointment_id=known_appointment_id))
 
@@ -62,9 +60,7 @@ async def test_given_a_known_appointment_when_handling_then_its_psychologist_is_
 async def test_given_an_unknown_appointment_when_handling_then_it_raises_and_notifies_nobody(
     appointments, psychologists, psychologist_notifier, handler_type, event_type, notification
 ):
-    handler = handler_type(
-        appointments=appointments, psychologists=psychologists, notifier=psychologist_notifier
-    )
+    handler = handler_type(appointments=appointments, psychologists=psychologists, notifier=psychologist_notifier)
 
     with pytest.raises(AppointmentNotFound):
         await handler.handle(event=event_type(appointment_id=AppointmentId.generate()))
@@ -82,9 +78,7 @@ async def test_given_an_appointment_of_an_unknown_psychologist_when_handling_the
     event_type,
     notification,
 ):
-    handler = handler_type(
-        appointments=appointments, psychologists=psychologists, notifier=psychologist_notifier
-    )
+    handler = handler_type(appointments=appointments, psychologists=psychologists, notifier=psychologist_notifier)
 
     with pytest.raises(PsychologistNotFound):
         await handler.handle(event=event_type(appointment_id=orphan_appointment_id))

@@ -53,9 +53,7 @@ class ScheduleAppointmentCommandHandler(CommandHandler[ScheduleAppointmentComman
             raise PatientNotFound(id=str(command.patient_id))
         if patient.status != PatientStatus.ACTIVE:
             raise PatientNotActive(id=str(command.patient_id))
-        psychologist: PsychologistDto | None = await self._psychologists.find_by_id(
-            id=command.psychologist_id
-        )
+        psychologist: PsychologistDto | None = await self._psychologists.find_by_id(id=command.psychologist_id)
         if psychologist is None:
             raise PsychologistNotFound(id=str(command.psychologist_id))
         if not await self._availability.is_available(

@@ -28,9 +28,7 @@ def test_given_an_inactive_patient_when_activating_then_it_is_active(created_pat
     assert created_patient.is_active
 
 
-def test_given_two_patients_with_the_same_id_when_comparing_then_they_are_equal(
-    created_patient, patient_id
-):
+def test_given_two_patients_with_the_same_id_when_comparing_then_they_are_equal(created_patient, patient_id):
     same_patient = Patient(id=patient_id, active=False)
 
     assert same_patient == created_patient
@@ -40,8 +38,6 @@ def test_given_two_patients_with_the_same_id_when_comparing_then_they_are_equal(
 def test_given_two_patients_with_different_ids_when_comparing_then_they_are_not_equal(
     created_patient,
 ):
-    other_patient = Patient.create(
-        id=PatientId.from_string(id="12345678-1234-4678-9234-567812345678")
-    )
+    other_patient = Patient.create(id=PatientId.from_string(id="12345678-1234-4678-9234-567812345678"))
 
     assert other_patient != created_patient

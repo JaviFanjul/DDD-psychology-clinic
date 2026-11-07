@@ -121,9 +121,7 @@ async def attendees(
 
 @pytest.fixture
 def slot() -> AppointmentSlot:
-    return AppointmentSlot(
-        starts_at=datetime(year=2026, month=11, day=10, hour=9, tzinfo=UTC), duration_minutes=50
-    )
+    return AppointmentSlot(starts_at=datetime(year=2026, month=11, day=10, hour=9, tzinfo=UTC), duration_minutes=50)
 
 
 @pytest.fixture

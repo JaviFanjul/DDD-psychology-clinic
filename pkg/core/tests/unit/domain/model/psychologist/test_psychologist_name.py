@@ -12,9 +12,7 @@ from core.domain.model.psychologist.psychologist_name import PsychologistName
         ("Laura", "   "),
     ],
 )
-def test_given_a_blank_part_when_creating_then_it_raises_invalid_psychologist_name(
-    first_name, last_names
-):
+def test_given_a_blank_part_when_creating_then_it_raises_invalid_psychologist_name(first_name, last_names):
     with pytest.raises(InvalidPsychologistName):
         PsychologistName(first_name=first_name, last_names=last_names)
 

@@ -61,14 +61,10 @@ class SpyPatientNotifier(PatientNotifier):
     async def appointment_scheduled(self, patient: PatientDto, appointment: AppointmentDto) -> None:
         self.notified.append(("appointment_scheduled", patient, appointment))
 
-    async def appointment_rescheduled(
-        self, patient: PatientDto, appointment: AppointmentDto
-    ) -> None:
+    async def appointment_rescheduled(self, patient: PatientDto, appointment: AppointmentDto) -> None:
         self.notified.append(("appointment_rescheduled", patient, appointment))
 
-    async def appointment_modality_changed(
-        self, patient: PatientDto, appointment: AppointmentDto
-    ) -> None:
+    async def appointment_modality_changed(self, patient: PatientDto, appointment: AppointmentDto) -> None:
         self.notified.append(("appointment_modality_changed", patient, appointment))
 
     async def appointment_cancelled(self, patient: PatientDto, appointment: AppointmentDto) -> None:
@@ -82,33 +78,22 @@ class SpyPsychologistNotifier(PsychologistNotifier):
     def __init__(self) -> None:
         self.notified: list[tuple[str, PsychologistDto, AppointmentDto]] = []
 
-    async def appointment_scheduled(
-        self, psychologist: PsychologistDto, appointment: AppointmentDto
-    ) -> None:
+    async def appointment_scheduled(self, psychologist: PsychologistDto, appointment: AppointmentDto) -> None:
         self.notified.append(("appointment_scheduled", psychologist, appointment))
 
-    async def appointment_rescheduled(
-        self, psychologist: PsychologistDto, appointment: AppointmentDto
-    ) -> None:
+    async def appointment_rescheduled(self, psychologist: PsychologistDto, appointment: AppointmentDto) -> None:
         self.notified.append(("appointment_rescheduled", psychologist, appointment))
 
-    async def appointment_modality_changed(
-        self, psychologist: PsychologistDto, appointment: AppointmentDto
-    ) -> None:
+    async def appointment_modality_changed(self, psychologist: PsychologistDto, appointment: AppointmentDto) -> None:
         self.notified.append(("appointment_modality_changed", psychologist, appointment))
 
-    async def appointment_cancelled(
-        self, psychologist: PsychologistDto, appointment: AppointmentDto
-    ) -> None:
+    async def appointment_cancelled(self, psychologist: PsychologistDto, appointment: AppointmentDto) -> None:
         self.notified.append(("appointment_cancelled", psychologist, appointment))
 
 
 class StubAppointmentQueryRepository(AppointmentQueryRepository):
     def __init__(self, appointments: list[AppointmentDto]) -> None:
-        self._appointments = {
-            AppointmentId.from_string(id=appointment.id): appointment
-            for appointment in appointments
-        }
+        self._appointments = {AppointmentId.from_string(id=appointment.id): appointment for appointment in appointments}
 
     async def find_by_id(self, id: AppointmentId) -> AppointmentDto | None:
         return self._appointments.get(id)
@@ -122,8 +107,7 @@ class StubAppointmentQueryRepository(AppointmentQueryRepository):
 class StubPsychologistQueryRepository(PsychologistQueryRepository):
     def __init__(self, psychologists: list[PsychologistDto]) -> None:
         self._psychologists = {
-            PsychologistId.from_string(id=psychologist.id): psychologist
-            for psychologist in psychologists
+            PsychologistId.from_string(id=psychologist.id): psychologist for psychologist in psychologists
         }
 
     async def find_by_id(self, id: PsychologistId) -> PsychologistDto | None:
@@ -145,8 +129,7 @@ class SpyAppointmentCommandRepository(AppointmentCommandRepository):
         return [
             appointment
             for appointment in self._appointments
-            if appointment.patient_id == patient_id
-            and appointment.status is AppointmentStatus.PENDING
+            if appointment.patient_id == patient_id and appointment.status is AppointmentStatus.PENDING
         ]
 
 
@@ -226,9 +209,7 @@ def appointment_dto(id: str, patient_id: str, psychologist_id: str) -> Appointme
 
 @pytest.fixture
 def known_appointment() -> AppointmentDto:
-    return appointment_dto(
-        id=KNOWN_APPOINTMENT_ID, patient_id=KNOWN_ID, psychologist_id=KNOWN_PSYCHOLOGIST_ID
-    )
+    return appointment_dto(id=KNOWN_APPOINTMENT_ID, patient_id=KNOWN_ID, psychologist_id=KNOWN_PSYCHOLOGIST_ID)
 
 
 @pytest.fixture
@@ -305,6 +286,4 @@ def appointment_repository(
 def cancel_pending_appointments_handler(
     appointment_repository: SpyAppointmentCommandRepository, event_bus: SpyEventBus
 ) -> CancelPendingAppointmentsOnPatientDischarged:
-    return CancelPendingAppointmentsOnPatientDischarged(
-        repository=appointment_repository, event_bus=event_bus
-    )
+    return CancelPendingAppointmentsOnPatientDischarged(repository=appointment_repository, event_bus=event_bus)

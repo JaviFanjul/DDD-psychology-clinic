@@ -15,9 +15,7 @@ STARTS_AT = datetime(year=2026, month=11, day=10, hour=9, tzinfo=UTC)
         (STARTS_AT, -30),
     ],
 )
-def test_given_an_invalid_slot_when_creating_then_it_raises_invalid_appointment_slot(
-    starts_at, duration_minutes
-):
+def test_given_an_invalid_slot_when_creating_then_it_raises_invalid_appointment_slot(starts_at, duration_minutes):
     with pytest.raises(InvalidAppointmentSlot):
         AppointmentSlot(starts_at=starts_at, duration_minutes=duration_minutes)
 

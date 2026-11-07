@@ -30,9 +30,7 @@ async def test_given_its_patient_when_handling_then_the_assistant_gets_the_whole
         )
     )
 
-    assert assistant.asked == [
-        [*earlier_messages, Message(type=MessageType.PATIENT, content="Me cuesta dormir")]
-    ]
+    assert assistant.asked == [[*earlier_messages, Message(type=MessageType.PATIENT, content="Me cuesta dormir")]]
 
 
 async def test_given_its_patient_when_handling_then_the_message_and_all_replies_are_saved(

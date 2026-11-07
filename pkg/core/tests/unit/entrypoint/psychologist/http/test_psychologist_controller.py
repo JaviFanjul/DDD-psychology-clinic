@@ -61,15 +61,11 @@ async def test_given_an_id_when_getting_then_it_dispatches_the_query_and_returns
 ):
     psychologist = await controller.get(id=psychologist_dto.id)
 
-    assert query_bus.handled == [
-        GetPsychologistQuery(id=PsychologistId.from_string(id=psychologist_dto.id))
-    ]
+    assert query_bus.handled == [GetPsychologistQuery(id=PsychologistId.from_string(id=psychologist_dto.id))]
     assert psychologist == psychologist_dto
 
 
-async def test_given_a_malformed_id_when_getting_then_it_raises_and_dispatches_nothing(
-    controller, query_bus
-):
+async def test_given_a_malformed_id_when_getting_then_it_raises_and_dispatches_nothing(controller, query_bus):
     with pytest.raises(InvalidPsychologistId):
         await controller.get(id="not-a-uuid")
 

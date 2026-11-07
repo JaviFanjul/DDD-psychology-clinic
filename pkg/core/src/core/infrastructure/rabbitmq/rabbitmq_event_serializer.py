@@ -47,9 +47,7 @@ APPOINTMENT_EVENT_TYPES: dict[str, type[AppointmentEvent]] = {
 }
 ROUTING_KEYS: dict[type[DomainEvent], str] = {
     event_type: routing_key
-    for routing_key, event_type in (
-        PATIENT_EVENT_TYPES | PSYCHOLOGIST_EVENT_TYPES | APPOINTMENT_EVENT_TYPES
-    ).items()
+    for routing_key, event_type in (PATIENT_EVENT_TYPES | PSYCHOLOGIST_EVENT_TYPES | APPOINTMENT_EVENT_TYPES).items()
 }
 
 

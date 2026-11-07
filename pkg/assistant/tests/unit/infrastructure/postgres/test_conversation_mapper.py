@@ -5,9 +5,7 @@ from assistant.domain.model.conversation.conversation_query_repository import (
 from assistant.infrastructure.postgres.conversation_mapper import ConversationMapper
 
 
-def test_given_a_conversation_when_mapping_to_model_then_it_flattens_its_messages(
-    conversation, conversation_model
-):
+def test_given_a_conversation_when_mapping_to_model_then_it_flattens_its_messages(conversation, conversation_model):
     mapped = ConversationMapper.to_model(conversation=conversation)
 
     assert (mapped.id, mapped.patient_id, mapped.messages) == (
@@ -17,9 +15,7 @@ def test_given_a_conversation_when_mapping_to_model_then_it_flattens_its_message
     )
 
 
-def test_given_a_model_when_mapping_to_entity_then_it_rebuilds_the_conversation(
-    conversation_model, conversation
-):
+def test_given_a_model_when_mapping_to_entity_then_it_rebuilds_the_conversation(conversation_model, conversation):
     mapped = ConversationMapper.to_entity(model=conversation_model)
 
     assert mapped.id == conversation.id

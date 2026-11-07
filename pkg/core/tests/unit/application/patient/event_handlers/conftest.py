@@ -48,14 +48,10 @@ class SpyPatientNotifier(PatientNotifier):
     async def appointment_scheduled(self, patient: PatientDto, appointment: AppointmentDto) -> None:
         self.notified.append(("appointment_scheduled", patient, appointment))
 
-    async def appointment_rescheduled(
-        self, patient: PatientDto, appointment: AppointmentDto
-    ) -> None:
+    async def appointment_rescheduled(self, patient: PatientDto, appointment: AppointmentDto) -> None:
         self.notified.append(("appointment_rescheduled", patient, appointment))
 
-    async def appointment_modality_changed(
-        self, patient: PatientDto, appointment: AppointmentDto
-    ) -> None:
+    async def appointment_modality_changed(self, patient: PatientDto, appointment: AppointmentDto) -> None:
         self.notified.append(("appointment_modality_changed", patient, appointment))
 
     async def appointment_cancelled(self, patient: PatientDto, appointment: AppointmentDto) -> None:
@@ -98,9 +94,7 @@ def repository(known_id: PatientId, known_patient: PatientDto) -> StubPatientQue
 
 
 @pytest.fixture
-def handler(
-    repository: StubPatientQueryRepository, notifier: SpyPatientNotifier
-) -> WelcomePatientOnPatientCreated:
+def handler(repository: StubPatientQueryRepository, notifier: SpyPatientNotifier) -> WelcomePatientOnPatientCreated:
     return WelcomePatientOnPatientCreated(repository=repository, notifier=notifier)
 
 

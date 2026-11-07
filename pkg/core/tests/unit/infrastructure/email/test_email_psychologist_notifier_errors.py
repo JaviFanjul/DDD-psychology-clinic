@@ -16,8 +16,6 @@ async def test_given_a_failing_smtp_server_when_notifying_then_it_raises_psychol
     psychologist_notifier, psychologist, appointment, notification
 ):
     with pytest.raises(PsychologistNotNotified) as raised:
-        await getattr(psychologist_notifier, notification)(
-            psychologist=psychologist, appointment=appointment
-        )
+        await getattr(psychologist_notifier, notification)(psychologist=psychologist, appointment=appointment)
 
     assert isinstance(raised.value.__cause__, aiosmtplib.SMTPException)

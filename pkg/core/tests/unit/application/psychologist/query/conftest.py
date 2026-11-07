@@ -36,9 +36,7 @@ def known_psychologist(known_id: str) -> PsychologistDto:
 
 
 @pytest.fixture
-def psychologist_handler(
-    known_id: str, known_psychologist: PsychologistDto
-) -> GetPsychologistQueryHandler:
+def psychologist_handler(known_id: str, known_psychologist: PsychologistDto) -> GetPsychologistQueryHandler:
     repository = StubPsychologistQueryRepository(
         psychologists={PsychologistId.from_string(id=known_id): known_psychologist}
     )

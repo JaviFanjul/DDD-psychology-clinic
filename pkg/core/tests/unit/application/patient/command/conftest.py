@@ -46,9 +46,7 @@ def patient_phone() -> PatientPhone:
 
 @pytest.fixture
 def patient_address() -> PatientAddress:
-    return PatientAddress(
-        street="Calle Mayor 3, 2º B", postal_code="08001", city="Barcelona", province="Barcelona"
-    )
+    return PatientAddress(street="Calle Mayor 3, 2º B", postal_code="08001", city="Barcelona", province="Barcelona")
 
 
 def stored_patient(
@@ -68,12 +66,8 @@ def stored_patient(
 
 
 @pytest.fixture
-def active_patient(
-    patient_name: PatientName, patient_phone: PatientPhone, patient_address: PatientAddress
-) -> Patient:
-    return stored_patient(
-        status=PatientStatus.ACTIVE, name=patient_name, phone=patient_phone, address=patient_address
-    )
+def active_patient(patient_name: PatientName, patient_phone: PatientPhone, patient_address: PatientAddress) -> Patient:
+    return stored_patient(status=PatientStatus.ACTIVE, name=patient_name, phone=patient_phone, address=patient_address)
 
 
 @pytest.fixture
@@ -99,9 +93,7 @@ def event_bus() -> SpyEventBus:
 
 
 @pytest.fixture
-def handler(
-    repository: SpyPatientCommandRepository, event_bus: SpyEventBus
-) -> CreatePatientCommandHandler:
+def handler(repository: SpyPatientCommandRepository, event_bus: SpyEventBus) -> CreatePatientCommandHandler:
     return CreatePatientCommandHandler(repository=repository, event_bus=event_bus)
 
 
@@ -113,7 +105,5 @@ def discharge_handler(
 
 
 @pytest.fixture
-def readmit_handler(
-    repository: SpyPatientCommandRepository, event_bus: SpyEventBus
-) -> ReadmitPatientCommandHandler:
+def readmit_handler(repository: SpyPatientCommandRepository, event_bus: SpyEventBus) -> ReadmitPatientCommandHandler:
     return ReadmitPatientCommandHandler(repository=repository, event_bus=event_bus)

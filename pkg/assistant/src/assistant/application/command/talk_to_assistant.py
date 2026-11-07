@@ -25,9 +25,7 @@ class TalkToAssistantCommandHandler(CommandHandler[TalkToAssistantCommand, Messa
         self._assistant = assistant
 
     async def handle(self, command: TalkToAssistantCommand) -> Message:
-        conversation: Conversation | None = await self._conversations.find_by_id(
-            id=command.conversation_id
-        )
+        conversation: Conversation | None = await self._conversations.find_by_id(id=command.conversation_id)
         if conversation is None:
             raise ConversationNotFound(id=str(command.conversation_id))
         conversation.patient_writes(patient_id=command.patient_id, content=command.content)

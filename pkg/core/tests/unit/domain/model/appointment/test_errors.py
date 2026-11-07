@@ -20,9 +20,7 @@ from core.domain.model.appointment.errors import (
         (InvalidAppointmentModality, "'some-value' is not a valid appointment modality"),
     ],
 )
-def test_given_a_value_when_creating_an_invalid_value_error_then_its_message_names_it(
-    error_type, expected_message
-):
+def test_given_a_value_when_creating_an_invalid_value_error_then_its_message_names_it(error_type, expected_message):
     value = "some-value"
 
     error = error_type(value=value)

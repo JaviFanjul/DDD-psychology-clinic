@@ -12,9 +12,7 @@ async def test_given_a_pending_appointment_when_handling_then_it_is_saved_with_t
     change_appointment_modality_handler, appointment_repository, pending_appointment
 ):
     await change_appointment_modality_handler.handle(
-        command=ChangeAppointmentModalityCommand(
-            id=pending_appointment.id, modality=AppointmentModality.ONLINE
-        )
+        command=ChangeAppointmentModalityCommand(id=pending_appointment.id, modality=AppointmentModality.ONLINE)
     )
 
     [appointment] = appointment_repository.saved
@@ -26,9 +24,7 @@ async def test_given_a_pending_appointment_when_handling_then_modality_changed_i
     change_appointment_modality_handler, event_bus, pending_appointment
 ):
     await change_appointment_modality_handler.handle(
-        command=ChangeAppointmentModalityCommand(
-            id=pending_appointment.id, modality=AppointmentModality.ONLINE
-        )
+        command=ChangeAppointmentModalityCommand(id=pending_appointment.id, modality=AppointmentModality.ONLINE)
     )
 
     [event] = event_bus.published
@@ -52,9 +48,7 @@ async def test_given_an_unchangeable_appointment_when_handling_then_it_raises_an
 
     with pytest.raises(expected_error):
         await change_appointment_modality_handler.handle(
-            command=ChangeAppointmentModalityCommand(
-                id=ids[appointment], modality=AppointmentModality.ONLINE
-            )
+            command=ChangeAppointmentModalityCommand(id=ids[appointment], modality=AppointmentModality.ONLINE)
         )
 
     assert appointment_repository.saved == []

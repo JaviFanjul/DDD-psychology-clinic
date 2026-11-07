@@ -45,16 +45,12 @@ def psychologist_id() -> PsychologistId:
 
 @pytest.fixture
 def slot() -> AppointmentSlot:
-    return AppointmentSlot(
-        starts_at=datetime(year=2026, month=11, day=10, hour=9, tzinfo=UTC), duration_minutes=50
-    )
+    return AppointmentSlot(starts_at=datetime(year=2026, month=11, day=10, hour=9, tzinfo=UTC), duration_minutes=50)
 
 
 @pytest.fixture
 def other_slot() -> AppointmentSlot:
-    return AppointmentSlot(
-        starts_at=datetime(year=2026, month=11, day=12, hour=16, tzinfo=UTC), duration_minutes=60
-    )
+    return AppointmentSlot(starts_at=datetime(year=2026, month=11, day=12, hour=16, tzinfo=UTC), duration_minutes=60)
 
 
 @pytest.fixture
@@ -79,9 +75,7 @@ def free_agenda() -> StubAppointmentQueryRepository:
 
 
 @pytest.fixture
-def busy_agenda(
-    slot: AppointmentSlot, other_slot: AppointmentSlot
-) -> StubAppointmentQueryRepository:
+def busy_agenda(slot: AppointmentSlot, other_slot: AppointmentSlot) -> StubAppointmentQueryRepository:
     return StubAppointmentQueryRepository(pending_slots=[other_slot, slot])
 
 

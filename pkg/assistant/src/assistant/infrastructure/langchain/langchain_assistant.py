@@ -14,16 +14,11 @@ class LangChainAssistant(Assistant):
     async def ask(self, messages: list[Message]) -> list[Message]:
         try:
             result = await self._agent.ainvoke(
-                {
-                    "messages": [
-                        LangChainMessageMapper.to_langchain(message=message) for message in messages
-                    ]
-                }
+                {"messages": [LangChainMessageMapper.to_langchain(message=message) for message in messages]}
             )
         except Exception as error:
             raise AssistantNotAnswered() from error
         replies: list[Message] = [
-            LangChainMessageMapper.to_domain(message=message)
-            for message in result["messages"][len(messages) :]
+            LangChainMessageMapper.to_domain(message=message) for message in result["messages"][len(messages) :]
         ]
         return replies

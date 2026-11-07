@@ -30,9 +30,7 @@ def test_given_its_data_when_creating_then_the_patient_holds_it(
     assert patient.status is PatientStatus.ACTIVE
 
 
-def test_given_a_created_patient_when_pulling_then_it_returns_patient_created(
-    created_patient, patient_id
-):
+def test_given_a_created_patient_when_pulling_then_it_returns_patient_created(created_patient, patient_id):
     [event] = created_patient.pull_events()
 
     assert isinstance(event, PatientCreated)
@@ -72,9 +70,7 @@ def test_given_an_active_patient_when_discharging_then_it_is_discharged(created_
     assert created_patient.status is PatientStatus.DISCHARGED
 
 
-def test_given_an_active_patient_when_discharging_then_it_records_patient_discharged(
-    created_patient, patient_id
-):
+def test_given_an_active_patient_when_discharging_then_it_records_patient_discharged(created_patient, patient_id):
     created_patient.pull_events()
 
     created_patient.discharge()
@@ -104,9 +100,7 @@ def test_given_a_discharged_patient_when_readmitting_then_it_is_active(created_p
     assert created_patient.status is PatientStatus.ACTIVE
 
 
-def test_given_a_discharged_patient_when_readmitting_then_it_records_patient_readmitted(
-    created_patient, patient_id
-):
+def test_given_a_discharged_patient_when_readmitting_then_it_records_patient_readmitted(created_patient, patient_id):
     created_patient.discharge()
     created_patient.pull_events()
 

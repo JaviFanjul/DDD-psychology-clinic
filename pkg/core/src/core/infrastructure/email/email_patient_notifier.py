@@ -16,22 +16,16 @@ FAREWELL_SUBJECT = "Gracias por confiar en la clínica"
 FAREWELL_BODY = "Hola {first_name}, tu baja como paciente se ha completado. Te deseamos lo mejor."
 APPOINTMENT_SCHEDULED_SUBJECT = "Tu consulta ha quedado agendada"
 APPOINTMENT_SCHEDULED_BODY = (
-    "Hola {first_name}, tu consulta {modality} del {date} a las {time} "
-    "({duration} minutos) ha quedado agendada."
+    "Hola {first_name}, tu consulta {modality} del {date} a las {time} ({duration} minutos) ha quedado agendada."
 )
 APPOINTMENT_RESCHEDULED_SUBJECT = "Tu consulta ha cambiado de fecha"
 APPOINTMENT_RESCHEDULED_BODY = (
-    "Hola {first_name}, tu consulta {modality} ahora es el {date} a las {time} "
-    "({duration} minutos)."
+    "Hola {first_name}, tu consulta {modality} ahora es el {date} a las {time} ({duration} minutos)."
 )
 APPOINTMENT_MODALITY_CHANGED_SUBJECT = "Tu consulta ha cambiado de modalidad"
-APPOINTMENT_MODALITY_CHANGED_BODY = (
-    "Hola {first_name}, tu consulta del {date} a las {time} ahora es {modality}."
-)
+APPOINTMENT_MODALITY_CHANGED_BODY = "Hola {first_name}, tu consulta del {date} a las {time} ahora es {modality}."
 APPOINTMENT_CANCELLED_SUBJECT = "Tu consulta ha sido cancelada"
-APPOINTMENT_CANCELLED_BODY = (
-    "Hola {first_name}, tu consulta del {date} a las {time} ha sido cancelada."
-)
+APPOINTMENT_CANCELLED_BODY = "Hola {first_name}, tu consulta del {date} a las {time} ha sido cancelada."
 FEEDBACK_SUBJECT = "¿Qué tal fue tu consulta?"
 FEEDBACK_BODY = (
     "Hola {first_name}, gracias por venir a tu consulta del {date}. "
@@ -90,9 +84,7 @@ class EmailPatientNotifier(PatientNotifier):
             body=APPOINTMENT_SCHEDULED_BODY,
         )
 
-    async def appointment_rescheduled(
-        self, patient: PatientDto, appointment: AppointmentDto
-    ) -> None:
+    async def appointment_rescheduled(self, patient: PatientDto, appointment: AppointmentDto) -> None:
         await self._send_about_appointment(
             patient=patient,
             appointment=appointment,
@@ -100,9 +92,7 @@ class EmailPatientNotifier(PatientNotifier):
             body=APPOINTMENT_RESCHEDULED_BODY,
         )
 
-    async def appointment_modality_changed(
-        self, patient: PatientDto, appointment: AppointmentDto
-    ) -> None:
+    async def appointment_modality_changed(self, patient: PatientDto, appointment: AppointmentDto) -> None:
         await self._send_about_appointment(
             patient=patient,
             appointment=appointment,
@@ -129,9 +119,7 @@ class EmailPatientNotifier(PatientNotifier):
         await self._send(
             patient=patient,
             subject=subject,
-            body=body.format(
-                first_name=patient.first_name, **self._appointment_details(appointment=appointment)
-            ),
+            body=body.format(first_name=patient.first_name, **self._appointment_details(appointment=appointment)),
         )
 
     async def _send(self, patient: PatientDto, subject: str, body: str) -> None:

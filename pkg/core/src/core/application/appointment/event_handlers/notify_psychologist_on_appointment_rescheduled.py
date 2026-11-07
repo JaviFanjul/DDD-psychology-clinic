@@ -26,17 +26,11 @@ class NotifyPsychologistOnAppointmentRescheduled(EventHandler[AppointmentResched
         self._notifier = notifier
 
     async def handle(self, event: AppointmentRescheduled) -> None:
-        appointment: AppointmentDto | None = await self._appointments.find_by_id(
-            id=event.appointment_id
-        )
+        appointment: AppointmentDto | None = await self._appointments.find_by_id(id=event.appointment_id)
         if appointment is None:
             raise AppointmentNotFound(id=str(event.appointment_id))
         psychologist_id: PsychologistId = PsychologistId.from_string(id=appointment.psychologist_id)
-        psychologist: PsychologistDto | None = await self._psychologists.find_by_id(
-            id=psychologist_id
-        )
+        psychologist: PsychologistDto | None = await self._psychologists.find_by_id(id=psychologist_id)
         if psychologist is None:
             raise PsychologistNotFound(id=appointment.psychologist_id)
-        await self._notifier.appointment_rescheduled(
-            psychologist=psychologist, appointment=appointment
-        )
+        await self._notifier.appointment_rescheduled(psychologist=psychologist, appointment=appointment)

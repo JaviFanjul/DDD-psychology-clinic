@@ -43,9 +43,7 @@ class AppointmentAlreadyCompleted(DomainError):
 
 class AppointmentOverlaps(DomainError):
     def __init__(self, psychologist_id: str) -> None:
-        super().__init__(
-            f"Psychologist {psychologist_id!r} already has a pending appointment at that time"
-        )
+        super().__init__(f"Psychologist {psychologist_id!r} already has a pending appointment at that time")
 
 
 class PatientAppointmentsNotLoaded(DomainError):

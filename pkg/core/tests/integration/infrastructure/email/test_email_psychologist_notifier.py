@@ -7,8 +7,7 @@ import pytest
         (
             "appointment_scheduled",
             "Tienes una nueva consulta",
-            "Hola Laura, tienes una nueva consulta presencial el 10/11/2026 a las 10:00 "
-            "(50 minutos).",
+            "Hola Laura, tienes una nueva consulta presencial el 10/11/2026 a las 10:00 (50 minutos).",
         ),
         (
             "appointment_rescheduled",
@@ -36,9 +35,7 @@ async def test_given_an_appointment_when_notifying_the_psychologist_then_the_ema
     expected_subject,
     expected_text,
 ):
-    await getattr(psychologist_notifier, notification)(
-        psychologist=psychologist, appointment=appointment
-    )
+    await getattr(psychologist_notifier, notification)(psychologist=psychologist, appointment=appointment)
 
     [message] = mailbox.messages()
     assert message["From"]["Address"] == "clinica@example.com"

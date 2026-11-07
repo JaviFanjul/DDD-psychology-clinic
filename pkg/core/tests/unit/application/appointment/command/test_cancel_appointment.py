@@ -9,9 +9,7 @@ from core.domain.model.appointment.events import AppointmentCancelled
 async def test_given_a_pending_appointment_when_handling_then_it_is_saved_cancelled(
     cancel_appointment_handler, appointment_repository, pending_appointment
 ):
-    await cancel_appointment_handler.handle(
-        command=CancelAppointmentCommand(id=pending_appointment.id)
-    )
+    await cancel_appointment_handler.handle(command=CancelAppointmentCommand(id=pending_appointment.id))
 
     [appointment] = appointment_repository.saved
     assert appointment.id == pending_appointment.id
@@ -21,9 +19,7 @@ async def test_given_a_pending_appointment_when_handling_then_it_is_saved_cancel
 async def test_given_a_pending_appointment_when_handling_then_appointment_cancelled_is_published(
     cancel_appointment_handler, event_bus, pending_appointment
 ):
-    await cancel_appointment_handler.handle(
-        command=CancelAppointmentCommand(id=pending_appointment.id)
-    )
+    await cancel_appointment_handler.handle(command=CancelAppointmentCommand(id=pending_appointment.id))
 
     [event] = event_bus.published
     assert isinstance(event, AppointmentCancelled)
@@ -45,9 +41,7 @@ async def test_given_an_unchangeable_appointment_when_handling_then_it_raises_an
     ids = {"unknown": AppointmentId.generate(), "cancelled": cancelled_appointment.id}
 
     with pytest.raises(expected_error):
-        await cancel_appointment_handler.handle(
-            command=CancelAppointmentCommand(id=ids[appointment])
-        )
+        await cancel_appointment_handler.handle(command=CancelAppointmentCommand(id=ids[appointment]))
 
     assert appointment_repository.saved == []
     assert event_bus.published == []

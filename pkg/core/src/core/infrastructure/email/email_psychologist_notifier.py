@@ -10,22 +10,16 @@ from core.domain.model.psychologist.psychologist_query_repository import Psychol
 
 APPOINTMENT_SCHEDULED_SUBJECT = "Tienes una nueva consulta"
 APPOINTMENT_SCHEDULED_BODY = (
-    "Hola {first_name}, tienes una nueva consulta {modality} el {date} a las {time} "
-    "({duration} minutos)."
+    "Hola {first_name}, tienes una nueva consulta {modality} el {date} a las {time} ({duration} minutos)."
 )
 APPOINTMENT_RESCHEDULED_SUBJECT = "Una consulta ha cambiado de fecha"
 APPOINTMENT_RESCHEDULED_BODY = (
-    "Hola {first_name}, tu consulta {modality} ahora es el {date} a las {time} "
-    "({duration} minutos)."
+    "Hola {first_name}, tu consulta {modality} ahora es el {date} a las {time} ({duration} minutos)."
 )
 APPOINTMENT_MODALITY_CHANGED_SUBJECT = "Una consulta ha cambiado de modalidad"
-APPOINTMENT_MODALITY_CHANGED_BODY = (
-    "Hola {first_name}, tu consulta del {date} a las {time} ahora es {modality}."
-)
+APPOINTMENT_MODALITY_CHANGED_BODY = "Hola {first_name}, tu consulta del {date} a las {time} ahora es {modality}."
 APPOINTMENT_CANCELLED_SUBJECT = "Una consulta ha sido cancelada"
-APPOINTMENT_CANCELLED_BODY = (
-    "Hola {first_name}, tu consulta del {date} a las {time} ha sido cancelada."
-)
+APPOINTMENT_CANCELLED_BODY = "Hola {first_name}, tu consulta del {date} a las {time} ha sido cancelada."
 CLINIC_TIMEZONE = ZoneInfo("Europe/Madrid")
 MODALITY_NAMES: dict[AppointmentModality, str] = {
     AppointmentModality.IN_PERSON: "presencial",
@@ -50,9 +44,7 @@ class EmailPsychologistNotifier(PsychologistNotifier):
         self._sender = sender
         self._validate_certs = validate_certs
 
-    async def appointment_scheduled(
-        self, psychologist: PsychologistDto, appointment: AppointmentDto
-    ) -> None:
+    async def appointment_scheduled(self, psychologist: PsychologistDto, appointment: AppointmentDto) -> None:
         await self._send(
             psychologist=psychologist,
             appointment=appointment,
@@ -60,9 +52,7 @@ class EmailPsychologistNotifier(PsychologistNotifier):
             body=APPOINTMENT_SCHEDULED_BODY,
         )
 
-    async def appointment_rescheduled(
-        self, psychologist: PsychologistDto, appointment: AppointmentDto
-    ) -> None:
+    async def appointment_rescheduled(self, psychologist: PsychologistDto, appointment: AppointmentDto) -> None:
         await self._send(
             psychologist=psychologist,
             appointment=appointment,
@@ -70,9 +60,7 @@ class EmailPsychologistNotifier(PsychologistNotifier):
             body=APPOINTMENT_RESCHEDULED_BODY,
         )
 
-    async def appointment_modality_changed(
-        self, psychologist: PsychologistDto, appointment: AppointmentDto
-    ) -> None:
+    async def appointment_modality_changed(self, psychologist: PsychologistDto, appointment: AppointmentDto) -> None:
         await self._send(
             psychologist=psychologist,
             appointment=appointment,
@@ -80,9 +68,7 @@ class EmailPsychologistNotifier(PsychologistNotifier):
             body=APPOINTMENT_MODALITY_CHANGED_BODY,
         )
 
-    async def appointment_cancelled(
-        self, psychologist: PsychologistDto, appointment: AppointmentDto
-    ) -> None:
+    async def appointment_cancelled(self, psychologist: PsychologistDto, appointment: AppointmentDto) -> None:
         await self._send(
             psychologist=psychologist,
             appointment=appointment,
@@ -90,9 +76,7 @@ class EmailPsychologistNotifier(PsychologistNotifier):
             body=APPOINTMENT_CANCELLED_BODY,
         )
 
-    async def _send(
-        self, psychologist: PsychologistDto, appointment: AppointmentDto, subject: str, body: str
-    ) -> None:
+    async def _send(self, psychologist: PsychologistDto, appointment: AppointmentDto, subject: str, body: str) -> None:
         message = EmailMessage()
         message["From"] = self._sender
         message["To"] = psychologist.email

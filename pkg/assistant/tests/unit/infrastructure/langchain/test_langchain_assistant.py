@@ -5,9 +5,7 @@ from assistant.infrastructure.langchain.langchain_assistant import LangChainAssi
 from langchain.messages import AIMessage, HumanMessage, ToolMessage
 
 
-async def test_given_messages_when_asking_then_it_returns_only_the_messages_of_this_turn(
-    agent, messages
-):
+async def test_given_messages_when_asking_then_it_returns_only_the_messages_of_this_turn(agent, messages):
     assistant = LangChainAssistant(agent=agent)
 
     replies = await assistant.ask(messages=messages)
@@ -23,9 +21,7 @@ async def test_given_messages_when_asking_then_it_returns_only_the_messages_of_t
     ]
 
 
-async def test_given_messages_when_asking_then_the_agent_receives_the_whole_history_in_order(
-    agent, messages
-):
+async def test_given_messages_when_asking_then_the_agent_receives_the_whole_history_in_order(agent, messages):
     assistant = LangChainAssistant(agent=agent)
 
     await assistant.ask(messages=messages)
@@ -40,9 +36,7 @@ async def test_given_messages_when_asking_then_the_agent_receives_the_whole_hist
     ]
 
 
-async def test_given_a_failing_agent_when_asking_then_it_raises_assistant_not_answered(
-    failing_agent, messages
-):
+async def test_given_a_failing_agent_when_asking_then_it_raises_assistant_not_answered(failing_agent, messages):
     assistant = LangChainAssistant(agent=failing_agent)
 
     with pytest.raises(AssistantNotAnswered) as raised:

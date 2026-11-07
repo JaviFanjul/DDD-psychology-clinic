@@ -84,9 +84,7 @@ def test_given_a_pending_appointment_when_rescheduling_then_it_holds_the_new_slo
     assert event.appointment_id == appointment_id
 
 
-def test_given_a_pending_appointment_when_rescheduling_to_its_slot_then_it_records_nothing(
-    scheduled_appointment, slot
-):
+def test_given_a_pending_appointment_when_rescheduling_to_its_slot_then_it_records_nothing(scheduled_appointment, slot):
     scheduled_appointment.pull_events()
 
     scheduled_appointment.reschedule(slot=slot)
@@ -145,9 +143,7 @@ def test_given_a_pending_appointment_when_closing_it_then_it_changes_status_and_
     "change",
     [
         lambda appointment, other_slot: appointment.reschedule(slot=other_slot),
-        lambda appointment, other_slot: appointment.change_modality(
-            modality=AppointmentModality.ONLINE
-        ),
+        lambda appointment, other_slot: appointment.change_modality(modality=AppointmentModality.ONLINE),
         lambda appointment, other_slot: appointment.cancel(),
         lambda appointment, other_slot: appointment.complete(),
     ],

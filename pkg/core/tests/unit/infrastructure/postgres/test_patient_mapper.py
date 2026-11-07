@@ -33,9 +33,7 @@ def test_given_a_patient_when_mapping_to_model_then_it_flattens_its_value_object
     )
 
 
-def test_given_a_model_when_mapping_to_entity_then_it_rebuilds_the_patient_without_events(
-    model, patient
-):
+def test_given_a_model_when_mapping_to_entity_then_it_rebuilds_the_patient_without_events(model, patient):
     mapped = PatientMapper.to_entity(model=model)
 
     assert mapped.id == patient.id

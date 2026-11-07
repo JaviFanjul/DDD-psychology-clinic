@@ -48,9 +48,7 @@ from ci.scripts.check_member_dependencies import find_violations
         ),
     ],
 )
-def test_given_a_member_breaking_the_rule_when_checking_then_it_is_reported(
-    write_member, content, expected
-):
+def test_given_a_member_breaking_the_rule_when_checking_then_it_is_reported(write_member, content, expected):
     root = write_member(content=content)
 
     violations = find_violations(root=root)
@@ -70,9 +68,7 @@ def test_given_a_member_breaking_the_rule_when_checking_then_it_is_reported(
         '[dependency-groups]\nall = [{ include-group = "other" }]\n',
     ],
 )
-def test_given_a_member_following_the_rule_when_checking_then_nothing_is_reported(
-    write_member, content
-):
+def test_given_a_member_following_the_rule_when_checking_then_nothing_is_reported(write_member, content):
     root = write_member(content=content)
 
     violations = find_violations(root=root)

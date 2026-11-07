@@ -41,7 +41,5 @@ def known_patient(known_id: str) -> PatientDto:
 
 @pytest.fixture
 def handler(known_id: str, known_patient: PatientDto) -> GetPatientQueryHandler:
-    repository = StubPatientQueryRepository(
-        patients={PatientId.from_string(id=known_id): known_patient}
-    )
+    repository = StubPatientQueryRepository(patients={PatientId.from_string(id=known_id): known_patient})
     return GetPatientQueryHandler(repository=repository)

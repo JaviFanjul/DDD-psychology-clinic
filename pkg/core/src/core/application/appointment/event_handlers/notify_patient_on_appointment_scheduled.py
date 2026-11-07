@@ -23,9 +23,7 @@ class NotifyPatientOnAppointmentScheduled(EventHandler[AppointmentScheduled]):
         self._notifier = notifier
 
     async def handle(self, event: AppointmentScheduled) -> None:
-        appointment: AppointmentDto | None = await self._appointments.find_by_id(
-            id=event.appointment_id
-        )
+        appointment: AppointmentDto | None = await self._appointments.find_by_id(id=event.appointment_id)
         if appointment is None:
             raise AppointmentNotFound(id=str(event.appointment_id))
         patient_id: PatientId = PatientId.from_string(id=appointment.patient_id)

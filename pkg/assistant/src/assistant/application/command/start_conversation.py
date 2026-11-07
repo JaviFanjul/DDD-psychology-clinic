@@ -33,7 +33,5 @@ class StartConversationCommandHandler(CommandHandler[StartConversationCommand, N
             raise PatientNotFound(id=str(command.patient_id))
         if not patient.is_active:
             raise PatientNotActive(id=str(command.patient_id))
-        conversation: Conversation = Conversation.start(
-            id=command.id, patient_id=command.patient_id
-        )
+        conversation: Conversation = Conversation.start(id=command.id, patient_id=command.patient_id)
         await self._conversations.save(conversation=conversation)

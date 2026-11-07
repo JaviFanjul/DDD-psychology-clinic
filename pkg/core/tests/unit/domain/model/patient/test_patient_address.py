@@ -28,9 +28,7 @@ VALID_ADDRESS = {
         ("postal_code", "٠٨٠٠١"),
     ],
 )
-def test_given_an_invalid_field_when_creating_then_it_raises_invalid_patient_address(
-    field, invalid_value
-):
+def test_given_an_invalid_field_when_creating_then_it_raises_invalid_patient_address(field, invalid_value):
     with pytest.raises(InvalidPatientAddress):
         PatientAddress(**{**VALID_ADDRESS, field: invalid_value})
 

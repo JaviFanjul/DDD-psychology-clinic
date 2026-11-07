@@ -40,9 +40,7 @@ async def test_given_a_pending_appointment_when_handling_then_it_checks_its_psyc
         command=RescheduleAppointmentCommand(id=pending_appointment.id, slot=other_slot)
     )
 
-    assert free_agenda.slot_queries == [
-        (pending_appointment.psychologist_id, pending_appointment.id)
-    ]
+    assert free_agenda.slot_queries == [(pending_appointment.psychologist_id, pending_appointment.id)]
 
 
 async def test_given_a_busy_agenda_when_handling_then_it_raises_and_saves_and_publishes_nothing(

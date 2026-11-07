@@ -77,9 +77,7 @@ class AppointmentController:
         appointment_id: AppointmentId = AppointmentId.generate()
         appointment_patient_id: PatientId = PatientId.from_string(id=patient_id)
         appointment_psychologist_id: PsychologistId = PsychologistId.from_string(id=psychologist_id)
-        appointment_slot: AppointmentSlot = AppointmentSlot(
-            starts_at=starts_at, duration_minutes=duration_minutes
-        )
+        appointment_slot: AppointmentSlot = AppointmentSlot(starts_at=starts_at, duration_minutes=duration_minutes)
         appointment_modality: AppointmentModality = AppointmentModality.from_string(value=modality)
         await self._command_bus.handle(
             command=ScheduleAppointmentCommand(
@@ -98,20 +96,14 @@ class AppointmentController:
 
     async def reschedule(self, id: str, starts_at: datetime, duration_minutes: int) -> None:
         appointment_id: AppointmentId = AppointmentId.from_string(id=id)
-        appointment_slot: AppointmentSlot = AppointmentSlot(
-            starts_at=starts_at, duration_minutes=duration_minutes
-        )
-        await self._command_bus.handle(
-            command=RescheduleAppointmentCommand(id=appointment_id, slot=appointment_slot)
-        )
+        appointment_slot: AppointmentSlot = AppointmentSlot(starts_at=starts_at, duration_minutes=duration_minutes)
+        await self._command_bus.handle(command=RescheduleAppointmentCommand(id=appointment_id, slot=appointment_slot))
 
     async def change_modality(self, id: str, modality: str) -> None:
         appointment_id: AppointmentId = AppointmentId.from_string(id=id)
         appointment_modality: AppointmentModality = AppointmentModality.from_string(value=modality)
         await self._command_bus.handle(
-            command=ChangeAppointmentModalityCommand(
-                id=appointment_id, modality=appointment_modality
-            )
+            command=ChangeAppointmentModalityCommand(id=appointment_id, modality=appointment_modality)
         )
 
     async def cancel(self, id: str) -> None:

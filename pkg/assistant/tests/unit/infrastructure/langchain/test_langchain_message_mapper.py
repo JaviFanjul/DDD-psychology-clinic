@@ -17,9 +17,7 @@ TOOL_CALL = ToolCall(id="call-1", name="find_sessions", arguments={"limit": 1})
         ),
     ],
 )
-def test_given_a_message_when_mapping_to_langchain_then_it_gets_its_langchain_type_and_content(
-    message, expected_type
-):
+def test_given_a_message_when_mapping_to_langchain_then_it_gets_its_langchain_type_and_content(message, expected_type):
     mapped = LangChainMessageMapper.to_langchain(message=message)
 
     assert type(mapped) is expected_type
@@ -65,9 +63,7 @@ def test_given_a_tool_message_when_mapping_to_langchain_then_it_keeps_its_tool_c
         ),
     ],
 )
-def test_given_a_langchain_message_when_mapping_to_domain_then_it_rebuilds_the_message(
-    message, expected
-):
+def test_given_a_langchain_message_when_mapping_to_domain_then_it_rebuilds_the_message(message, expected):
     mapped = LangChainMessageMapper.to_domain(message=message)
 
     assert mapped == expected

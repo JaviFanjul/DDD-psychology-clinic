@@ -6,14 +6,10 @@ from core.domain.model.psychologist.psychologist_query_repository import Psychol
 
 class PsychologistNotifier(ABC):
     @abstractmethod
-    async def appointment_scheduled(
-        self, psychologist: PsychologistDto, appointment: AppointmentDto
-    ) -> None: ...
+    async def appointment_scheduled(self, psychologist: PsychologistDto, appointment: AppointmentDto) -> None: ...
 
     @abstractmethod
-    async def appointment_rescheduled(
-        self, psychologist: PsychologistDto, appointment: AppointmentDto
-    ) -> None: ...
+    async def appointment_rescheduled(self, psychologist: PsychologistDto, appointment: AppointmentDto) -> None: ...
 
     @abstractmethod
     async def appointment_modality_changed(
@@ -21,6 +17,4 @@ class PsychologistNotifier(ABC):
     ) -> None: ...
 
     @abstractmethod
-    async def appointment_cancelled(
-        self, psychologist: PsychologistDto, appointment: AppointmentDto
-    ) -> None: ...
+    async def appointment_cancelled(self, psychologist: PsychologistDto, appointment: AppointmentDto) -> None: ...

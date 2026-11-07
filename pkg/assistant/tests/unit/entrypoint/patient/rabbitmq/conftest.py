@@ -31,9 +31,7 @@ class FakeMessage:
 @pytest.fixture
 def message() -> Callable[..., FakeMessage]:
     def build(routing_key: str, patient_id: str) -> FakeMessage:
-        return FakeMessage(
-            routing_key=routing_key, body=json.dumps({"patient_id": patient_id}).encode()
-        )
+        return FakeMessage(routing_key=routing_key, body=json.dumps({"patient_id": patient_id}).encode())
 
     return build
 

@@ -29,9 +29,7 @@ def patient_phone() -> PatientPhone:
 
 @pytest.fixture
 def patient_address() -> PatientAddress:
-    return PatientAddress(
-        street="Calle Mayor 3, 2º B", postal_code="08001", city="Barcelona", province="Barcelona"
-    )
+    return PatientAddress(street="Calle Mayor 3, 2º B", postal_code="08001", city="Barcelona", province="Barcelona")
 
 
 @pytest.fixture

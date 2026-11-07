@@ -18,9 +18,7 @@ async def test_given_a_failing_database_when_saving_then_it_rolls_back_and_raise
     assert failing_session.rolled_back
 
 
-async def test_given_a_failing_database_when_finding_then_it_raises_not_loaded(
-    failing_session, conversation
-):
+async def test_given_a_failing_database_when_finding_then_it_raises_not_loaded(failing_session, conversation):
     repository = PostgresConversationCommandRepository(session=failing_session)
 
     with pytest.raises(ConversationNotLoaded) as raised:

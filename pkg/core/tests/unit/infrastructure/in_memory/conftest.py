@@ -49,9 +49,7 @@ def second_handler() -> SpyCommandHandler:
 
 
 @pytest.fixture
-def command_bus(
-    first_handler: SpyCommandHandler, second_handler: SpyCommandHandler
-) -> InMemoryCommandBus:
+def command_bus(first_handler: SpyCommandHandler, second_handler: SpyCommandHandler) -> InMemoryCommandBus:
     bus = InMemoryCommandBus()
     bus.register(command_type=FirstCommand, handler=first_handler)
     bus.register(command_type=SecondCommand, handler=second_handler)

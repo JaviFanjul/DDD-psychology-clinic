@@ -27,9 +27,7 @@ VALID_PHONE = {"prefix": "+34", "number": "612345678"}
         ("number", "٦١٢٣٤٥٦٧٨"),
     ],
 )
-def test_given_an_invalid_field_when_creating_then_it_raises_invalid_patient_phone(
-    field, invalid_value
-):
+def test_given_an_invalid_field_when_creating_then_it_raises_invalid_patient_phone(field, invalid_value):
     with pytest.raises(InvalidPatientPhone):
         PatientPhone(**{**VALID_PHONE, field: invalid_value})
 

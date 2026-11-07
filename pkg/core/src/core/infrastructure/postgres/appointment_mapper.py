@@ -30,9 +30,7 @@ class AppointmentMapper:
             id=AppointmentId(id=model.id),
             patient_id=PatientId(id=model.patient_id),
             psychologist_id=PsychologistId(id=model.psychologist_id),
-            slot=AppointmentSlot(
-                starts_at=model.starts_at, duration_minutes=model.duration_minutes
-            ),
+            slot=AppointmentSlot(starts_at=model.starts_at, duration_minutes=model.duration_minutes),
             modality=AppointmentModality(model.modality),
             status=AppointmentStatus(model.status),
         )

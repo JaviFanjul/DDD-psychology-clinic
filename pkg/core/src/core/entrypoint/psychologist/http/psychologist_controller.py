@@ -50,15 +50,9 @@ class PsychologistController:
     ) -> str:
         psychologist_id: PsychologistId = PsychologistId.generate()
         psychologist_email: PsychologistEmail = PsychologistEmail(value=email)
-        psychologist_name: PsychologistName = PsychologistName(
-            first_name=first_name, last_names=last_names
-        )
-        psychologist_phone: PsychologistPhone = PsychologistPhone(
-            prefix=phone_prefix, number=phone_number
-        )
-        psychologist_license_number: PsychologistLicenseNumber = PsychologistLicenseNumber(
-            value=license_number
-        )
+        psychologist_name: PsychologistName = PsychologistName(first_name=first_name, last_names=last_names)
+        psychologist_phone: PsychologistPhone = PsychologistPhone(prefix=phone_prefix, number=phone_number)
+        psychologist_license_number: PsychologistLicenseNumber = PsychologistLicenseNumber(value=license_number)
         await self._command_bus.handle(
             command=CreatePsychologistCommand(
                 id=psychologist_id,

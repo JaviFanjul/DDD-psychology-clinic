@@ -1,9 +1,7 @@
 import pytest
 
 
-async def test_given_a_patient_when_welcoming_them_then_a_welcome_email_reaches_them(
-    notifier, mailbox, patient
-):
+async def test_given_a_patient_when_welcoming_them_then_a_welcome_email_reaches_them(notifier, mailbox, patient):
     await notifier.welcome(patient=patient)
 
     [message] = mailbox.messages()
@@ -22,9 +20,7 @@ async def test_given_a_patient_when_bidding_them_farewell_then_a_farewell_email_
     assert message["From"]["Address"] == "clinica@example.com"
     assert [recipient["Address"] for recipient in message["To"]] == ["ana@gmail.com"]
     assert message["Subject"] == "Gracias por confiar en la clínica"
-    assert message["Text"].strip() == (
-        "Hola Ana, tu baja como paciente se ha completado. Te deseamos lo mejor."
-    )
+    assert message["Text"].strip() == ("Hola Ana, tu baja como paciente se ha completado. Te deseamos lo mejor.")
 
 
 async def test_given_a_patient_when_welcoming_them_back_then_a_welcome_back_email_reaches_them(
@@ -45,8 +41,7 @@ async def test_given_a_patient_when_welcoming_them_back_then_a_welcome_back_emai
         (
             "appointment_scheduled",
             "Tu consulta ha quedado agendada",
-            "Hola Ana, tu consulta presencial del 10/11/2026 a las 10:00 (50 minutos) "
-            "ha quedado agendada.",
+            "Hola Ana, tu consulta presencial del 10/11/2026 a las 10:00 (50 minutos) ha quedado agendada.",
         ),
         (
             "appointment_rescheduled",

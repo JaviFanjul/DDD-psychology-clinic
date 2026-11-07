@@ -33,9 +33,7 @@ async def test_given_a_failing_database_when_finding_then_it_raises_appointment_
     assert isinstance(raised.value.__cause__, SQLAlchemyError)
 
 
-async def test_given_a_failing_database_when_finding_pending_by_patient_then_it_raises(
-    failing_session, appointment
-):
+async def test_given_a_failing_database_when_finding_pending_by_patient_then_it_raises(failing_session, appointment):
     repository = PostgresAppointmentCommandRepository(session=failing_session)
 
     with pytest.raises(PatientAppointmentsNotLoaded) as raised:

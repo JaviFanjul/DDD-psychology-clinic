@@ -41,9 +41,7 @@ async def test_given_valid_data_when_scheduling_then_it_dispatches_the_command_w
     ]
 
 
-async def test_given_two_schedulings_when_scheduling_then_each_gets_its_own_id(
-    controller, schedule_data
-):
+async def test_given_two_schedulings_when_scheduling_then_each_gets_its_own_id(controller, schedule_data):
     first_id = await controller.schedule(**schedule_data)
     second_id = await controller.schedule(**schedule_data)
 
@@ -74,9 +72,7 @@ async def test_given_an_id_when_getting_then_it_dispatches_the_query_and_returns
 ):
     appointment = await controller.get(id=appointment_dto.id)
 
-    assert query_bus.handled == [
-        GetAppointmentQuery(id=AppointmentId.from_string(id=appointment_dto.id))
-    ]
+    assert query_bus.handled == [GetAppointmentQuery(id=AppointmentId.from_string(id=appointment_dto.id))]
     assert appointment == appointment_dto
 
 
@@ -97,9 +93,7 @@ async def test_given_an_invalid_slot_when_rescheduling_then_it_raises_and_dispat
     controller, command_bus, appointment_dto
 ):
     with pytest.raises(InvalidAppointmentSlot):
-        await controller.reschedule(
-            id=appointment_dto.id, starts_at=NAIVE_START, duration_minutes=60
-        )
+        await controller.reschedule(id=appointment_dto.id, starts_at=NAIVE_START, duration_minutes=60)
 
     assert command_bus.handled == []
 
@@ -135,21 +129,15 @@ async def test_given_an_id_when_closing_then_it_dispatches_the_command(
 ):
     await getattr(controller, action)(id=appointment_dto.id)
 
-    assert command_bus.handled == [
-        command_type(id=AppointmentId.from_string(id=appointment_dto.id))
-    ]
+    assert command_bus.handled == [command_type(id=AppointmentId.from_string(id=appointment_dto.id))]
 
 
 @pytest.mark.parametrize(
     "call",
     [
         lambda controller, starts_at: controller.get(id="not-a-uuid"),
-        lambda controller, starts_at: controller.reschedule(
-            id="not-a-uuid", starts_at=starts_at, duration_minutes=50
-        ),
-        lambda controller, starts_at: controller.change_modality(
-            id="not-a-uuid", modality="online"
-        ),
+        lambda controller, starts_at: controller.reschedule(id="not-a-uuid", starts_at=starts_at, duration_minutes=50),
+        lambda controller, starts_at: controller.change_modality(id="not-a-uuid", modality="online"),
         lambda controller, starts_at: controller.cancel(id="not-a-uuid"),
         lambda controller, starts_at: controller.complete(id="not-a-uuid"),
     ],
