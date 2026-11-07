@@ -1,0 +1,118 @@
+import pytest
+from core.application.patient.event_handlers.bid_farewell_to_patient_on_patient_discharged import (
+    BidFarewellToPatientOnPatientDischarged,
+)
+from core.application.patient.event_handlers.welcome_patient_back_on_patient_readmitted import (
+    WelcomePatientBackOnPatientReadmitted,
+)
+from core.application.patient.event_handlers.welcome_patient_on_patient_created import (
+    WelcomePatientOnPatientCreated,
+)
+from core.domain.model.appointment.appointment_query_repository import (
+    AppointmentDto,
+)
+from core.domain.model.patient.patient_id import PatientId
+from core.domain.model.patient.patient_notifier import PatientNotifier
+from core.domain.model.patient.patient_query_repository import (
+    PatientDto,
+    PatientQueryRepository,
+)
+
+KNOWN_ID = "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+
+
+class StubPatientQueryRepository(PatientQueryRepository):
+    def __init__(self, patients: dict[PatientId, PatientDto]) -> None:
+        self._patients = patients
+
+    async def find_by_id(self, id: PatientId) -> PatientDto | None:
+        return self._patients.get(id)
+
+
+class SpyPatientNotifier(PatientNotifier):
+    def __init__(self) -> None:
+        self.welcomed: list[PatientDto] = []
+        self.welcomed_back: list[PatientDto] = []
+        self.farewelled: list[PatientDto] = []
+        self.notified: list[tuple[str, PatientDto, AppointmentDto]] = []
+
+    async def welcome(self, patient: PatientDto) -> None:
+        self.welcomed.append(patient)
+
+    async def welcome_back(self, patient: PatientDto) -> None:
+        self.welcomed_back.append(patient)
+
+    async def farewell(self, patient: PatientDto) -> None:
+        self.farewelled.append(patient)
+
+    async def appointment_scheduled(self, patient: PatientDto, appointment: AppointmentDto) -> None:
+        self.notified.append(("appointment_scheduled", patient, appointment))
+
+    async def appointment_rescheduled(
+        self, patient: PatientDto, appointment: AppointmentDto
+    ) -> None:
+        self.notified.append(("appointment_rescheduled", patient, appointment))
+
+    async def appointment_modality_changed(
+        self, patient: PatientDto, appointment: AppointmentDto
+    ) -> None:
+        self.notified.append(("appointment_modality_changed", patient, appointment))
+
+    async def appointment_cancelled(self, patient: PatientDto, appointment: AppointmentDto) -> None:
+        self.notified.append(("appointment_cancelled", patient, appointment))
+
+    async def request_feedback(self, patient: PatientDto, appointment: AppointmentDto) -> None:
+        self.notified.append(("request_feedback", patient, appointment))
+
+
+@pytest.fixture
+def known_id() -> PatientId:
+    return PatientId.from_string(id=KNOWN_ID)
+
+
+@pytest.fixture
+def known_patient() -> PatientDto:
+    return PatientDto(
+        id=KNOWN_ID,
+        email="ana@gmail.com",
+        first_name="Ana",
+        last_names="García López",
+        phone_prefix="+34",
+        phone_number="612345678",
+        street="Calle Mayor 3, 2º B",
+        postal_code="08001",
+        city="Barcelona",
+        province="Barcelona",
+        status="active",
+    )
+
+
+@pytest.fixture
+def notifier() -> SpyPatientNotifier:
+    return SpyPatientNotifier()
+
+
+@pytest.fixture
+def repository(known_id: PatientId, known_patient: PatientDto) -> StubPatientQueryRepository:
+    return StubPatientQueryRepository(patients={known_id: known_patient})
+
+
+@pytest.fixture
+def handler(
+    repository: StubPatientQueryRepository, notifier: SpyPatientNotifier
+) -> WelcomePatientOnPatientCreated:
+    return WelcomePatientOnPatientCreated(repository=repository, notifier=notifier)
+
+
+@pytest.fixture
+def farewell_handler(
+    repository: StubPatientQueryRepository, notifier: SpyPatientNotifier
+) -> BidFarewellToPatientOnPatientDischarged:
+    return BidFarewellToPatientOnPatientDischarged(repository=repository, notifier=notifier)
+
+
+@pytest.fixture
+def welcome_back_handler(
+    repository: StubPatientQueryRepository, notifier: SpyPatientNotifier
+) -> WelcomePatientBackOnPatientReadmitted:
+    return WelcomePatientBackOnPatientReadmitted(repository=repository, notifier=notifier)

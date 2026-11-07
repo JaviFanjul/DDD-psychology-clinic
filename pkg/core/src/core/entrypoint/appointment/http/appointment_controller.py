@@ -1,14 +1,14 @@
 from datetime import datetime
 from http import HTTPStatus
 
-from core.application.command.cancel_appointment import CancelAppointmentCommand
-from core.application.command.change_appointment_modality import (
+from core.application.appointment.command.cancel_appointment import CancelAppointmentCommand
+from core.application.appointment.command.change_appointment_modality import (
     ChangeAppointmentModalityCommand,
 )
-from core.application.command.complete_appointment import CompleteAppointmentCommand
-from core.application.command.reschedule_appointment import RescheduleAppointmentCommand
-from core.application.command.schedule_appointment import ScheduleAppointmentCommand
-from core.application.query.get_appointment import GetAppointmentQuery
+from core.application.appointment.command.complete_appointment import CompleteAppointmentCommand
+from core.application.appointment.command.reschedule_appointment import RescheduleAppointmentCommand
+from core.application.appointment.command.schedule_appointment import ScheduleAppointmentCommand
+from core.application.appointment.query.get_appointment import GetAppointmentQuery
 from core.domain.command_bus import CommandBus
 from core.domain.domain_error import DomainError
 from core.domain.model.appointment.appointment_id import AppointmentId

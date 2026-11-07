@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
-from core.application.command.create_psychologist import CreatePsychologistCommand
-from core.application.query.get_psychologist import GetPsychologistQuery
+from core.application.psychologist.command.create_psychologist import CreatePsychologistCommand
+from core.application.psychologist.query.get_psychologist import GetPsychologistQuery
 from core.domain.command_bus import CommandBus
 from core.domain.domain_error import DomainError
 from core.domain.model.psychologist.errors import (
