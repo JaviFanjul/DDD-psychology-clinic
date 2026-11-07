@@ -39,3 +39,8 @@ class PsychologistNotSaved(DomainError):
 class PsychologistNotLoaded(DomainError):
     def __init__(self, id: str) -> None:
         super().__init__(f"Psychologist {id!r} could not be loaded")
+
+
+class PsychologistNotNotified(DomainError):
+    def __init__(self, id: str) -> None:
+        super().__init__(f"Psychologist {id!r} could not be notified")

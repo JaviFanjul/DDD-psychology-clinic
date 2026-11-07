@@ -46,9 +46,7 @@ def test_given_an_invalid_license_number_when_creating_then_the_error_does_not_e
         ("cv123456", "CV-123456"),
     ],
 )
-def test_given_a_valid_license_number_when_creating_then_it_holds_its_normalized_form(
-    raw_license_number, expected
-):
+def test_given_a_valid_license_number_when_creating_then_it_holds_its_normalized_form(raw_license_number, expected):
     license_number = PsychologistLicenseNumber(value=raw_license_number)
 
     assert license_number.value == expected

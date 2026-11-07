@@ -47,18 +47,14 @@ class ConversationController:
     async def start(self, patient_id: str) -> str:
         conversation_id: ConversationId = ConversationId.generate()
         owner_id: PatientId = PatientId.from_string(id=patient_id)
-        await self._command_bus.handle(
-            command=StartConversationCommand(id=conversation_id, patient_id=owner_id)
-        )
+        await self._command_bus.handle(command=StartConversationCommand(id=conversation_id, patient_id=owner_id))
         return str(conversation_id)
 
     async def talk(self, id: str, patient_id: str, content: str) -> str:
         conversation_id: ConversationId = ConversationId.from_string(id=id)
         owner_id: PatientId = PatientId.from_string(id=patient_id)
         reply: Message = await self._command_bus.handle(
-            command=TalkToAssistantCommand(
-                conversation_id=conversation_id, patient_id=owner_id, content=content
-            )
+            command=TalkToAssistantCommand(conversation_id=conversation_id, patient_id=owner_id, content=content)
         )
         return reply.content
 

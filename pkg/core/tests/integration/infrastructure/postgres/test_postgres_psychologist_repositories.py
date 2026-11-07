@@ -12,9 +12,7 @@ async def find_by_id(sessions, id):
         return await PostgresPsychologistQueryRepository(session=session).find_by_id(id=id)
 
 
-async def test_given_a_saved_psychologist_when_finding_it_then_it_returns_its_dto(
-    sessions, psychologist
-):
+async def test_given_a_saved_psychologist_when_finding_it_then_it_returns_its_dto(sessions, psychologist):
     async with sessions() as session:
         await PostgresPsychologistCommandRepository(session=session).save(psychologist=psychologist)
 

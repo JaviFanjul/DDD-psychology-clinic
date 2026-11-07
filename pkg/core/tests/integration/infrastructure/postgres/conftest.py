@@ -1,7 +1,13 @@
 import time
 from collections.abc import AsyncIterator, Iterator
+from datetime import UTC, datetime
 
 import pytest
+from core.domain.model.appointment.appointment import Appointment
+from core.domain.model.appointment.appointment_id import AppointmentId
+from core.domain.model.appointment.appointment_modality import AppointmentModality
+from core.domain.model.appointment.appointment_slot import AppointmentSlot
+from core.domain.model.appointment.appointment_status import AppointmentStatus
 from core.domain.model.patient.patient import Patient
 from core.domain.model.patient.patient_address import PatientAddress
 from core.domain.model.patient.patient_email import PatientEmail
@@ -16,6 +22,12 @@ from core.domain.model.psychologist.psychologist_license_number import Psycholog
 from core.domain.model.psychologist.psychologist_name import PsychologistName
 from core.domain.model.psychologist.psychologist_phone import PsychologistPhone
 from core.infrastructure.postgres.base import Base
+from core.infrastructure.postgres.postgres_patient_command_repository import (
+    PostgresPatientCommandRepository,
+)
+from core.infrastructure.postgres.postgres_psychologist_command_repository import (
+    PostgresPsychologistCommandRepository,
+)
 from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
@@ -95,3 +107,36 @@ def psychologist() -> Psychologist:
 @pytest.fixture
 def unknown_psychologist_id() -> PsychologistId:
     return PsychologistId.from_string(id="00000000-0000-4000-8000-000000000000")
+
+
+@pytest.fixture
+async def attendees(
+    sessions: async_sessionmaker[AsyncSession], patient: Patient, psychologist: Psychologist
+) -> tuple[Patient, Psychologist]:
+    async with sessions() as session:
+        await PostgresPatientCommandRepository(session=session).save(patient=patient)
+        await PostgresPsychologistCommandRepository(session=session).save(psychologist=psychologist)
+    return patient, psychologist
+
+
+@pytest.fixture
+def slot() -> AppointmentSlot:
+    return AppointmentSlot(starts_at=datetime(year=2026, month=11, day=10, hour=9, tzinfo=UTC), duration_minutes=50)
+
+
+@pytest.fixture
+def appointment(attendees: tuple[Patient, Psychologist], slot: AppointmentSlot) -> Appointment:
+    patient, psychologist = attendees
+    return Appointment(
+        id=AppointmentId.from_string(id="3f2504e0-4f89-41d3-9a0c-0305e82c3301"),
+        patient_id=patient.id,
+        psychologist_id=psychologist.id,
+        slot=slot,
+        modality=AppointmentModality.ONLINE,
+        status=AppointmentStatus.PENDING,
+    )
+
+
+@pytest.fixture
+def unknown_appointment_id() -> AppointmentId:
+    return AppointmentId.from_string(id="00000000-0000-4000-8000-000000000000")

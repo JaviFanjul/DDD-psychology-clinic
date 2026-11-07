@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
-from core.application.command.create_psychologist import CreatePsychologistCommand
-from core.application.query.get_psychologist import GetPsychologistQuery
+from core.application.psychologist.command.create_psychologist import CreatePsychologistCommand
+from core.application.psychologist.query.get_psychologist import GetPsychologistQuery
 from core.domain.command_bus import CommandBus
 from core.domain.domain_error import DomainError
 from core.domain.model.psychologist.errors import (
@@ -50,15 +50,9 @@ class PsychologistController:
     ) -> str:
         psychologist_id: PsychologistId = PsychologistId.generate()
         psychologist_email: PsychologistEmail = PsychologistEmail(value=email)
-        psychologist_name: PsychologistName = PsychologistName(
-            first_name=first_name, last_names=last_names
-        )
-        psychologist_phone: PsychologistPhone = PsychologistPhone(
-            prefix=phone_prefix, number=phone_number
-        )
-        psychologist_license_number: PsychologistLicenseNumber = PsychologistLicenseNumber(
-            value=license_number
-        )
+        psychologist_name: PsychologistName = PsychologistName(first_name=first_name, last_names=last_names)
+        psychologist_phone: PsychologistPhone = PsychologistPhone(prefix=phone_prefix, number=phone_number)
+        psychologist_license_number: PsychologistLicenseNumber = PsychologistLicenseNumber(value=license_number)
         await self._command_bus.handle(
             command=CreatePsychologistCommand(
                 id=psychologist_id,

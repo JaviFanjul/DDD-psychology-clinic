@@ -56,15 +56,11 @@ async def channel(rabbitmq_url: str) -> AsyncIterator[AbstractChannel]:
 
 @pytest.fixture
 async def exchange(channel: AbstractChannel) -> AbstractExchange:
-    return await channel.declare_exchange(
-        name=PATIENTS_EXCHANGE, type=ExchangeType.TOPIC, durable=True
-    )
+    return await channel.declare_exchange(name=PATIENTS_EXCHANGE, type=ExchangeType.TOPIC, durable=True)
 
 
 @pytest.fixture
-async def queue(
-    channel: AbstractChannel, exchange: AbstractExchange
-) -> AsyncIterator[AbstractQueue]:
+async def queue(channel: AbstractChannel, exchange: AbstractExchange) -> AsyncIterator[AbstractQueue]:
     queue = await channel.declare_queue(exclusive=True)
     for routing_key in COMMAND_BY_ROUTING_KEY:
         await queue.bind(exchange=exchange, routing_key=routing_key)

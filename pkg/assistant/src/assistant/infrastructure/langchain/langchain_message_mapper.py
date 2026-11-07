@@ -20,9 +20,7 @@ class LangChainMessageMapper:
     @staticmethod
     def to_domain(message: AnyMessage) -> Message:
         if isinstance(message, ToolMessage):
-            return Message(
-                type=MessageType.TOOL, content=message.text, tool_call_id=message.tool_call_id
-            )
+            return Message(type=MessageType.TOOL, content=message.text, tool_call_id=message.tool_call_id)
         if isinstance(message, AIMessage):
             return Message(
                 type=MessageType.ASSISTANT,

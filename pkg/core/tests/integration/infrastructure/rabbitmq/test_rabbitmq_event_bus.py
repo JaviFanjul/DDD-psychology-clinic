@@ -16,6 +16,5 @@ async def test_given_patient_events_when_publishing_them_then_they_reach_the_exc
     assert all(message.content_type == "application/json" for message in messages)
     assert all(message.delivery_mode == DeliveryMode.PERSISTENT for message in messages)
     assert [
-        RabbitMqEventSerializer.from_message(routing_key=message.routing_key, body=message.body)
-        for message in messages
+        RabbitMqEventSerializer.from_message(routing_key=message.routing_key, body=message.body) for message in messages
     ] == events

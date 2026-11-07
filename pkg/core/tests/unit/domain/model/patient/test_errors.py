@@ -3,6 +3,7 @@ from core.domain.model.patient.errors import (
     InvalidPatientId,
     PatientAlreadyActive,
     PatientAlreadyDischarged,
+    PatientNotActive,
     PatientNotFound,
     PatientNotLoaded,
     PatientNotNotified,
@@ -31,11 +32,10 @@ def test_given_an_id_when_creating_patient_not_found_then_its_message_names_it()
     [
         (PatientAlreadyDischarged, "Patient 'some-id' is already discharged"),
         (PatientAlreadyActive, "Patient 'some-id' is already active"),
+        (PatientNotActive, "Patient 'some-id' is not active"),
     ],
 )
-def test_given_an_id_when_creating_a_status_error_then_its_message_names_it(
-    error_type, expected_message
-):
+def test_given_an_id_when_creating_a_status_error_then_its_message_names_it(error_type, expected_message):
     id = "some-id"
 
     error = error_type(id=id)
@@ -51,9 +51,7 @@ def test_given_an_id_when_creating_a_status_error_then_its_message_names_it(
         (PatientNotNotified, "Patient 'some-id' could not be notified"),
     ],
 )
-def test_given_an_id_when_creating_an_infrastructure_error_then_its_message_names_it(
-    error_type, expected_message
-):
+def test_given_an_id_when_creating_an_infrastructure_error_then_its_message_names_it(error_type, expected_message):
     id = "some-id"
 
     error = error_type(id=id)

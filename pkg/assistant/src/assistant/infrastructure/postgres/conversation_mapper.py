@@ -17,10 +17,7 @@ class ConversationMapper:
         return ConversationModel(
             id=conversation.id.id,
             patient_id=conversation.patient_id.id,
-            messages=[
-                ConversationMapper._message_to_json(message=message)
-                for message in conversation.messages
-            ],
+            messages=[ConversationMapper._message_to_json(message=message) for message in conversation.messages],
         )
 
     @staticmethod
@@ -28,9 +25,7 @@ class ConversationMapper:
         return Conversation(
             id=ConversationId(id=model.id),
             patient_id=PatientId(id=model.patient_id),
-            messages=[
-                ConversationMapper._message_from_json(message=message) for message in model.messages
-            ],
+            messages=[ConversationMapper._message_from_json(message=message) for message in model.messages],
         )
 
     @staticmethod
@@ -64,9 +59,7 @@ class ConversationMapper:
             type=MessageType(message["type"]),
             content=message["content"],
             tool_calls=tuple(
-                ToolCall(
-                    id=tool_call["id"], name=tool_call["name"], arguments=tool_call["arguments"]
-                )
+                ToolCall(id=tool_call["id"], name=tool_call["name"], arguments=tool_call["arguments"])
                 for tool_call in message["tool_calls"]
             ),
             tool_call_id=message["tool_call_id"],

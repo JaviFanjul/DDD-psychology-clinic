@@ -76,9 +76,7 @@ def conversation_model() -> ConversationModel:
             {
                 "type": "assistant",
                 "content": "",
-                "tool_calls": [
-                    {"id": "call-1", "name": "find_sessions", "arguments": {"limit": 1}}
-                ],
+                "tool_calls": [{"id": "call-1", "name": "find_sessions", "arguments": {"limit": 1}}],
                 "tool_call_id": None,
             },
             {

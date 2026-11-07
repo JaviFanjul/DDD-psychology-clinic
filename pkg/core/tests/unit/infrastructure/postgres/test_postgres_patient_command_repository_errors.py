@@ -6,9 +6,7 @@ from core.infrastructure.postgres.postgres_patient_command_repository import (
 from sqlalchemy.exc import SQLAlchemyError
 
 
-async def test_given_a_failing_database_when_saving_then_it_rolls_back_and_raises_not_saved(
-    failing_session, patient
-):
+async def test_given_a_failing_database_when_saving_then_it_rolls_back_and_raises_not_saved(failing_session, patient):
     repository = PostgresPatientCommandRepository(session=failing_session)
 
     with pytest.raises(PatientNotSaved) as raised:
@@ -18,9 +16,7 @@ async def test_given_a_failing_database_when_saving_then_it_rolls_back_and_raise
     assert failing_session.rolled_back
 
 
-async def test_given_a_failing_database_when_finding_then_it_raises_patient_not_loaded(
-    failing_session, patient
-):
+async def test_given_a_failing_database_when_finding_then_it_raises_patient_not_loaded(failing_session, patient):
     repository = PostgresPatientCommandRepository(session=failing_session)
 
     with pytest.raises(PatientNotLoaded) as raised:

@@ -3,6 +3,14 @@ from datetime import datetime
 from typing import Any
 
 from core.domain.domain_event import DomainEvent
+from core.domain.model.appointment.appointment_id import AppointmentId
+from core.domain.model.appointment.events import (
+    AppointmentCancelled,
+    AppointmentCompleted,
+    AppointmentModalityChanged,
+    AppointmentRescheduled,
+    AppointmentScheduled,
+)
 from core.domain.model.patient.events import (
     PatientCreated,
     PatientDischarged,
@@ -22,9 +30,24 @@ PATIENT_EVENT_TYPES: dict[str, type[PatientEvent]] = {
 PSYCHOLOGIST_EVENT_TYPES: dict[str, type[PsychologistCreated]] = {
     "psychologist.created": PsychologistCreated,
 }
+type AppointmentEvent = (
+    AppointmentScheduled
+    | AppointmentRescheduled
+    | AppointmentModalityChanged
+    | AppointmentCancelled
+    | AppointmentCompleted
+)
+
+APPOINTMENT_EVENT_TYPES: dict[str, type[AppointmentEvent]] = {
+    "appointment.scheduled": AppointmentScheduled,
+    "appointment.rescheduled": AppointmentRescheduled,
+    "appointment.modality_changed": AppointmentModalityChanged,
+    "appointment.cancelled": AppointmentCancelled,
+    "appointment.completed": AppointmentCompleted,
+}
 ROUTING_KEYS: dict[type[DomainEvent], str] = {
     event_type: routing_key
-    for routing_key, event_type in (PATIENT_EVENT_TYPES | PSYCHOLOGIST_EVENT_TYPES).items()
+    for routing_key, event_type in (PATIENT_EVENT_TYPES | PSYCHOLOGIST_EVENT_TYPES | APPOINTMENT_EVENT_TYPES).items()
 }
 
 
@@ -36,6 +59,15 @@ class RabbitMqEventSerializer:
             body = {"patient_id": str(event.patient_id)}
         elif isinstance(event, PsychologistCreated):
             body = {"psychologist_id": str(event.psychologist_id)}
+        elif isinstance(
+            event,
+            AppointmentScheduled
+            | AppointmentRescheduled
+            | AppointmentModalityChanged
+            | AppointmentCancelled
+            | AppointmentCompleted,
+        ):
+            body = {"appointment_id": str(event.appointment_id)}
         else:
             raise TypeError(f"{type(event).__name__} cannot be serialized")
         body["created_at"] = event.created_at.isoformat()
@@ -49,6 +81,11 @@ class RabbitMqEventSerializer:
         if routing_key in PSYCHOLOGIST_EVENT_TYPES:
             event = PSYCHOLOGIST_EVENT_TYPES[routing_key](
                 psychologist_id=PsychologistId.from_string(id=data["psychologist_id"]),
+                created_at=created_at,
+            )
+        elif routing_key in APPOINTMENT_EVENT_TYPES:
+            event = APPOINTMENT_EVENT_TYPES[routing_key](
+                appointment_id=AppointmentId.from_string(id=data["appointment_id"]),
                 created_at=created_at,
             )
         else:

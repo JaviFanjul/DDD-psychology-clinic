@@ -56,9 +56,7 @@ def active_patient() -> Patient:
 
 @pytest.fixture
 def inactive_patient() -> Patient:
-    return Patient(
-        id=PatientId.from_string(id="12345678-1234-4678-9234-567812345678"), active=False
-    )
+    return Patient(id=PatientId.from_string(id="12345678-1234-4678-9234-567812345678"), active=False)
 
 
 @pytest.fixture
@@ -93,9 +91,7 @@ def earlier_messages() -> list[Message]:
 
 @pytest.fixture
 def stored_conversation(active_patient: Patient, earlier_messages: list[Message]) -> Conversation:
-    return Conversation(
-        id=ConversationId.generate(), patient_id=active_patient.id, messages=earlier_messages
-    )
+    return Conversation(id=ConversationId.generate(), patient_id=active_patient.id, messages=earlier_messages)
 
 
 @pytest.fixture

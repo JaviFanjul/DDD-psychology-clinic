@@ -9,9 +9,7 @@ async def test_given_an_active_patient_when_handling_then_the_conversation_is_sa
 ):
     id = ConversationId.generate()
 
-    await start_conversation_handler.handle(
-        command=StartConversationCommand(id=id, patient_id=active_patient.id)
-    )
+    await start_conversation_handler.handle(command=StartConversationCommand(id=id, patient_id=active_patient.id))
 
     [conversation] = conversations.saved
     assert conversation.id == id
@@ -23,9 +21,7 @@ async def test_given_an_unknown_patient_when_handling_then_it_raises_and_saves_n
 ):
     with pytest.raises(PatientNotFound):
         await start_conversation_handler.handle(
-            command=StartConversationCommand(
-                id=ConversationId.generate(), patient_id=unknown_patient_id
-            )
+            command=StartConversationCommand(id=ConversationId.generate(), patient_id=unknown_patient_id)
         )
 
     assert conversations.saved == []
@@ -36,9 +32,7 @@ async def test_given_an_inactive_patient_when_handling_then_it_raises_and_saves_
 ):
     with pytest.raises(PatientNotActive):
         await start_conversation_handler.handle(
-            command=StartConversationCommand(
-                id=ConversationId.generate(), patient_id=inactive_patient.id
-            )
+            command=StartConversationCommand(id=ConversationId.generate(), patient_id=inactive_patient.id)
         )
 
     assert conversations.saved == []

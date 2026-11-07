@@ -1,8 +1,8 @@
 import pytest
-from core.application.command.create_patient import CreatePatientCommand
-from core.application.command.discharge_patient import DischargePatientCommand
-from core.application.command.readmit_patient import ReadmitPatientCommand
-from core.application.query.get_patient import GetPatientQuery
+from core.application.patient.command.create_patient import CreatePatientCommand
+from core.application.patient.command.discharge_patient import DischargePatientCommand
+from core.application.patient.command.readmit_patient import ReadmitPatientCommand
+from core.application.patient.query.get_patient import GetPatientQuery
 from core.domain.model.patient.errors import (
     InvalidPatientAddress,
     InvalidPatientEmail,
@@ -72,47 +72,33 @@ async def test_given_an_id_when_getting_then_it_dispatches_the_query_and_returns
     assert patient == patient_dto
 
 
-async def test_given_a_malformed_id_when_getting_then_it_raises_and_dispatches_nothing(
-    controller, query_bus
-):
+async def test_given_a_malformed_id_when_getting_then_it_raises_and_dispatches_nothing(controller, query_bus):
     with pytest.raises(InvalidPatientId):
         await controller.get(id="not-a-uuid")
 
     assert query_bus.handled == []
 
 
-async def test_given_an_id_when_discharging_then_it_dispatches_the_command(
-    controller, command_bus, patient_dto
-):
+async def test_given_an_id_when_discharging_then_it_dispatches_the_command(controller, command_bus, patient_dto):
     await controller.discharge(id=patient_dto.id)
 
-    assert command_bus.handled == [
-        DischargePatientCommand(id=PatientId.from_string(id=patient_dto.id))
-    ]
+    assert command_bus.handled == [DischargePatientCommand(id=PatientId.from_string(id=patient_dto.id))]
 
 
-async def test_given_a_malformed_id_when_discharging_then_it_raises_and_dispatches_nothing(
-    controller, command_bus
-):
+async def test_given_a_malformed_id_when_discharging_then_it_raises_and_dispatches_nothing(controller, command_bus):
     with pytest.raises(InvalidPatientId):
         await controller.discharge(id="not-a-uuid")
 
     assert command_bus.handled == []
 
 
-async def test_given_an_id_when_readmitting_then_it_dispatches_the_command(
-    controller, command_bus, patient_dto
-):
+async def test_given_an_id_when_readmitting_then_it_dispatches_the_command(controller, command_bus, patient_dto):
     await controller.readmit(id=patient_dto.id)
 
-    assert command_bus.handled == [
-        ReadmitPatientCommand(id=PatientId.from_string(id=patient_dto.id))
-    ]
+    assert command_bus.handled == [ReadmitPatientCommand(id=PatientId.from_string(id=patient_dto.id))]
 
 
-async def test_given_a_malformed_id_when_readmitting_then_it_raises_and_dispatches_nothing(
-    controller, command_bus
-):
+async def test_given_a_malformed_id_when_readmitting_then_it_raises_and_dispatches_nothing(controller, command_bus):
     with pytest.raises(InvalidPatientId):
         await controller.readmit(id="not-a-uuid")
 

@@ -1,9 +1,9 @@
 from http import HTTPStatus
 
-from core.application.command.create_patient import CreatePatientCommand
-from core.application.command.discharge_patient import DischargePatientCommand
-from core.application.command.readmit_patient import ReadmitPatientCommand
-from core.application.query.get_patient import GetPatientQuery
+from core.application.patient.command.create_patient import CreatePatientCommand
+from core.application.patient.command.discharge_patient import DischargePatientCommand
+from core.application.patient.command.readmit_patient import ReadmitPatientCommand
+from core.application.patient.query.get_patient import GetPatientQuery
 from core.domain.command_bus import CommandBus
 from core.domain.domain_error import DomainError
 from core.domain.model.patient.errors import (

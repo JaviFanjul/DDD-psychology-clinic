@@ -15,9 +15,7 @@ async def find_by_id(sessions, id):
         return await PostgresConversationQueryRepository(session=session).find_by_id(id=id)
 
 
-async def test_given_a_saved_conversation_when_finding_it_then_it_returns_its_dto(
-    sessions, conversation
-):
+async def test_given_a_saved_conversation_when_finding_it_then_it_returns_its_dto(sessions, conversation):
     async with sessions() as session:
         await PostgresConversationCommandRepository(session=session).save(conversation=conversation)
 

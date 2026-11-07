@@ -2,6 +2,7 @@ from datetime import UTC, datetime
 
 import pytest
 from core.domain.domain_event import DomainEvent
+from core.domain.model.appointment.appointment_id import AppointmentId
 from core.domain.model.patient.patient_id import PatientId
 from core.domain.model.psychologist.psychologist_id import PsychologistId
 
@@ -17,6 +18,11 @@ def patient_id() -> PatientId:
 @pytest.fixture
 def psychologist_id() -> PsychologistId:
     return PsychologistId.from_string(id="0b1f2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d")
+
+
+@pytest.fixture
+def appointment_id() -> AppointmentId:
+    return AppointmentId.from_string(id="3f2504e0-4f89-41d3-9a0c-0305e82c3301")
 
 
 @pytest.fixture

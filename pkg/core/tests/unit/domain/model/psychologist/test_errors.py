@@ -3,6 +3,7 @@ from core.domain.model.psychologist.errors import (
     InvalidPsychologistId,
     PsychologistNotFound,
     PsychologistNotLoaded,
+    PsychologistNotNotified,
     PsychologistNotSaved,
 )
 
@@ -21,6 +22,7 @@ def test_given_a_malformed_value_when_creating_invalid_psychologist_id_then_its_
         (PsychologistNotFound, "Psychologist 'some-id' was not found"),
         (PsychologistNotSaved, "Psychologist 'some-id' could not be saved"),
         (PsychologistNotLoaded, "Psychologist 'some-id' could not be loaded"),
+        (PsychologistNotNotified, "Psychologist 'some-id' could not be notified"),
     ],
 )
 def test_given_an_id_when_creating_an_error_then_its_message_names_it(error_type, expected_message):
